@@ -2,45 +2,9 @@ package filter
 
 import (
 	"fmt"
-	"reflect"
 	"strconv"
 	"strings"
 )
-
-/*************************************************************
- * global filters
- *************************************************************/
-
-// filters global user filters
-var filters map[string]interface{}
-
-// var filterValues map[string]reflect.Value
-
-// AddFilters add global filters
-func AddFilters(m map[string]interface{}) {
-	for name, filterFunc := range m {
-		AddFilter(name, filterFunc)
-	}
-}
-
-// AddFilter add global filter to the pkg.
-func AddFilter(name string, filterFunc interface{}) {
-	if filterFunc == nil || reflect.TypeOf(filterFunc).Kind() != reflect.Func {
-		panicf("'%s' invalid filter func, it must be an func type", name)
-	}
-
-	if filters == nil {
-		filters = make(map[string]interface{})
-	}
-
-	filters[name] = filterFunc
-}
-
-// Filter get filter by name
-func Filter(name string) (fn interface{}, ok bool) {
-	fn, ok = filters[name]
-	return
-}
 
 /*************************************************************
  * built in filters
