@@ -51,9 +51,19 @@ func MustUint(str string) uint64 {
 	return val
 }
 
+// Int64 convert
+func Int64(str string) (int64, error) {
+	return ToInt64(str)
+}
+
 // ToInt64 convert
 func ToInt64(str string) (int64, error) {
 	return strconv.ParseInt(Trim(str), 10, 0)
+}
+
+// Float convert
+func Float(str string) (float64, error) {
+	return ToFloat(str)
 }
 
 // ToFloat convert
