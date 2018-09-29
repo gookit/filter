@@ -122,6 +122,11 @@ func MustFloat(str string) float64 {
 	return val
 }
 
+// ToBool convert.
+func ToBool(s string) (bool, error) {
+	return Bool(s)
+}
+
 // Bool convert.
 func Bool(s string) (bool, error) {
 	return strconv.ParseBool(Trim(s))
