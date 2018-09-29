@@ -3,6 +3,7 @@ package filter
 
 // Filtration definition. Sanitization Sanitizing Sanitize
 type Filtration struct {
+	data map[string]interface{}
 	// filtered data
 	filtered map[string]interface{}
 }

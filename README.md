@@ -17,6 +17,8 @@ intVal, err := filter.Int("20")
 strArr := filter.Str2Array("a,b, c", ",")
 ```
 
+## Filters & Converters
+
 ## License
 
 **MIT**
