@@ -45,7 +45,7 @@ func TestInt(t *testing.T) {
 func TestStr2Array(t *testing.T) {
 	is := assert.New(t)
 
-	ss := Str2Array("a,b,c", ",")
+	ss := StrToArray("a,b,c", ",")
 	is.Len(ss, 3)
 	is.Equal(`[]string{"a", "b", "c"}`, fmt.Sprintf("%#v", ss))
 
@@ -60,7 +60,7 @@ func TestStr2Array(t *testing.T) {
 	}
 
 	for _, sample := range tests {
-		ss = Str2Array(sample)
+		ss = StrToArray(sample)
 		is.Equal(`[]string{"a", "b", "c"}`, fmt.Sprintf("%#v", ss))
 	}
 }

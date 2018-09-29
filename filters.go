@@ -2,8 +2,21 @@ package filter
 
 import (
 	"fmt"
+	"html/template"
+	"net/url"
 	"strconv"
 	"strings"
+	"time"
+)
+
+// some alias methods.
+var (
+	Lower = strings.ToLower
+	Upper = strings.ToUpper
+	Title = strings.ToTitle
+	// escape string.
+	EscapeJS   = template.JSEscapeString
+	EscapeHTML = template.HTMLEscapeString
 )
 
 /*************************************************************
@@ -17,6 +30,34 @@ func Trim(str string, cutSet ...string) string {
 	}
 
 	return strings.TrimSpace(str)
+}
+
+// TrimLeft char in the string.
+func TrimLeft(s string, cutSet ...string) string {
+	if len(cutSet) > 0 {
+		return strings.TrimLeft(s, cutSet[0])
+	}
+
+	return strings.TrimLeft(s, " ")
+}
+
+// TrimRight char in the string.
+func TrimRight(s string, cutSet ...string) string {
+	if len(cutSet) > 0 {
+		return strings.TrimRight(s, cutSet[0])
+	}
+
+	return strings.TrimRight(s, " ")
+}
+
+// UrlEncode
+func UrlEncode(s string) string {
+	u, err := url.Parse(s)
+	if err != nil {
+		return s
+	}
+
+	return u.EscapedPath()
 }
 
 // Int convert
@@ -77,13 +118,103 @@ func MustFloat(str string) float64 {
 	return val
 }
 
-// Str2Array split string to array.
-func Str2Array(str string, sep ...string) []string {
+// StrToArray split string to array.
+func StrToArray(str string, sep ...string) []string {
 	if len(sep) > 0 {
 		return stringSplit(str, sep[0])
 	}
 
 	return stringSplit(str, ",")
+}
+
+// StrToTime convert date string to time.Time
+func StrToTime(s string) (t time.Time, err error) {
+	var layout string
+	switch len(s) {
+	case 10: // 2006-01-02
+		layout = "2006-01-02"
+	case 19: // "2006-01-02 12:24:36" "2006-01-02T15:04:05"
+		layout = "2006-01-02 15:04:05"
+		if strings.ContainsRune(s, 'T') {
+			layout = "2006-01-02T15:04:05"
+		}
+	default:
+		return
+	}
+
+	t, err = time.Parse(layout, s)
+	// t, err = time.ParseInLocation(layout, s, time.Local)
+	return
+}
+
+// Unique value in the given array, slice.
+func Unique(val interface{}) (interface{}) {
+	return val // todo
+}
+
+// Substr cut string
+func Substr(s string, pos, length int) string {
+	runes := []rune(s)
+	l := pos + length
+
+	if l > len(runes) {
+		l = len(runes)
+	}
+
+	return string(runes[pos:l])
+}
+
+// LowerFirst lower first char
+func LowerFirst(s string) string {
+	if len(s) == 0 {
+		return s
+	}
+
+	f := s[0]
+	if f >= 'A' && f <= 'Z' {
+		return strings.ToLower(string(f)) + string(s[1:])
+	}
+
+	return s
+}
+
+// UpperFirst upper first char
+func UpperFirst(s string) string {
+	if len(s) == 0 {
+		return s
+	}
+
+	f := s[0]
+	if f >= 'a' && f <= 'z' {
+		return strings.ToUpper(string(f)) + string(s[1:])
+	}
+
+	return s
+}
+
+// Email filter, clear invalid chars.
+func Email(s string) string {
+	// According to rfc5321, "The local-part of a mailbox MUST BE treated as case sensitive"
+	return emailLocalPart(s) + "@" + strings.ToLower(emailDomainPart(s))
+}
+
+// a valid email will only have one "@", but let's treat the last "@" as the domain part separator
+func emailLocalPart(s string) string {
+	i := strings.LastIndex(s, "@")
+	if i == -1 {
+		return s
+	}
+
+	return s[0:i]
+}
+
+func emailDomainPart(s string) string {
+	i := strings.LastIndex(s, "@")
+	if i == -1 {
+		return ""
+	}
+
+	return s[i+1:]
 }
 
 func stringSplit(str, sep string) (ss []string) {
