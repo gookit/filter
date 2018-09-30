@@ -59,6 +59,33 @@ func TestStrToFloat(t *testing.T) {
 	is.Equal(-123.5, fltVal)
 }
 
+func TestStrToBool(t *testing.T) {
+	is := assert.New(t)
+
+	tests1 := map[string]bool{
+		"1":     true,
+		"on":    true,
+		"yes":   true,
+		"true":  true,
+		"false": false,
+		"off":   false,
+		"no":    false,
+		"0":     false,
+	}
+
+	for str, want := range tests1 {
+		is.Equal(want, MustBool(str))
+	}
+
+	blVal, err := ToBool("1")
+	is.Nil(err)
+	is.True(blVal)
+
+	blVal, err = Bool("10")
+	is.Error(err)
+	is.False(blVal)
+}
+
 func TestLowerOrUpperFirst(t *testing.T) {
 	is := assert.New(t)
 	tests := []string{
@@ -136,7 +163,7 @@ func TestStr2Array(t *testing.T) {
 		is.Equal(`[]string{"a", "b", "c"}`, fmt.Sprintf("%#v", ss))
 	}
 
-	ss = StrToArray("", ",")
+	ss = StrToSlice("", ",")
 	is.Len(ss, 0)
 
 	ss = StrToArray(", , ", ",")

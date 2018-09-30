@@ -2,7 +2,9 @@ package filter
 
 import (
 	"errors"
+	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -17,6 +19,103 @@ var (
 	}
 	errInvalidParam = errors.New("invalid input parameter")
 )
+
+/*************************************************************
+ * string to int,bool,float
+ *************************************************************/
+
+// Int convert
+func Int(str string) (int, error) {
+	return ToInt(str)
+}
+
+// ToInt convert
+func ToInt(str string) (int, error) {
+	return strconv.Atoi(Trim(str))
+}
+
+// MustInt convert
+func MustInt(str string) int {
+	val, _ := strconv.Atoi(Trim(str))
+	return val
+}
+
+// Uint convert
+func Uint(str string) (uint64, error) {
+	return ToUint(str)
+}
+
+// ToUint convert
+func ToUint(str string) (uint64, error) {
+	return strconv.ParseUint(Trim(str), 10, 0)
+}
+
+// MustUint convert
+func MustUint(str string) uint64 {
+	val, _ := strconv.ParseUint(Trim(str), 10, 0)
+	return val
+}
+
+// Int64 convert
+func Int64(str string) (int64, error) {
+	return ToInt64(str)
+}
+
+// ToInt64 convert
+func ToInt64(str string) (int64, error) {
+	return strconv.ParseInt(Trim(str), 10, 0)
+}
+
+// MustInt64 convert
+func MustInt64(str string) int64 {
+	i64, _ := strconv.ParseInt(Trim(str), 10, 0)
+	return i64
+}
+
+// Float convert
+func Float(str string) (float64, error) {
+	return ToFloat(str)
+}
+
+// ToFloat convert
+func ToFloat(str string) (float64, error) {
+	return strconv.ParseFloat(Trim(str), 0)
+}
+
+// MustFloat convert
+func MustFloat(str string) float64 {
+	val, _ := strconv.ParseFloat(Trim(str), 0)
+	return val
+}
+
+// ToBool convert.
+func ToBool(s string) (bool, error) {
+	return Bool(s)
+}
+
+// Bool parse string to bool
+func Bool(s string) (bool, error) {
+	// return strconv.ParseBool(Trim(s))
+	lower := strings.ToLower(s)
+	switch lower {
+	case "1", "on", "yes", "true":
+		return true, nil
+	case "0", "off", "no", "false":
+		return false, nil
+	}
+
+	return false, fmt.Errorf("'%s' cannot convert to bool", s)
+}
+
+// MustBool convert.
+func MustBool(s string) bool {
+	val, _ := Bool(Trim(s))
+	return val
+}
+
+/*************************************************************
+ * change string case
+ *************************************************************/
 
 // LowerFirst lower first char
 func LowerFirst(s string) string {
@@ -88,8 +187,17 @@ func CamelCase(str string, sep ...string) string {
 	})
 }
 
-// StrToArray split string to array.
+/*************************************************************
+ * string to slice, time
+ *************************************************************/
+
+// StrToArray alias of the StrToSlice()
 func StrToArray(str string, sep ...string) []string {
+	return StrToSlice(str, sep...)
+}
+
+// StrToSlice split string to array.
+func StrToSlice(str string, sep ...string) []string {
 	if len(sep) > 0 {
 		return stringSplit(str, sep[0])
 	}
