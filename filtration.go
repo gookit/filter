@@ -13,7 +13,7 @@ func (f *Filtration) Get(key string) (interface{}, bool) {
 	return GetByPath(key, f.filtered)
 }
 
-// Set value by key
-func (f *Filtration) Set(field string, val interface{}) error {
-	panic("implement me")
+// Filtering
+func (f *Filtration) Filtering() error {
+	return nil
 }

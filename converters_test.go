@@ -7,9 +7,18 @@ import (
 	"testing"
 )
 
-func TestStrToInt(t *testing.T) {
+func TestValToInt(t *testing.T) {
 	is := assert.New(t)
 
+	tests := []interface{}{
+		2,
+		int8(2), int16(2), int32(2), int64(2),
+		uint(2), uint8(2), uint16(2), uint32(2), uint64(2),
+		float32(2.2), float64(2.3),
+		"2",
+	}
+
+	// To int
 	intVal, err := Int("2")
 	is.Nil(err)
 	is.Equal(2, intVal)
@@ -18,10 +27,14 @@ func TestStrToInt(t *testing.T) {
 	is.Nil(err)
 	is.Equal(-2, intVal)
 
-	is.Equal(2, MustInt("2"))
 	is.Equal(-2, MustInt("-2"))
 	is.Equal(0, MustInt("2a"))
+	is.Equal(0, MustInt(nil))
+	for _, in := range tests {
+		is.Equal(2, MustInt(in))
+	}
 
+	// To uint
 	uintVal, err := Uint("2")
 	is.Nil(err)
 	is.Equal(uint64(2), uintVal)
@@ -31,7 +44,12 @@ func TestStrToInt(t *testing.T) {
 
 	is.Equal(uint64(0), MustUint("-2"))
 	is.Equal(uint64(0), MustUint("2a"))
+	is.Equal(uint64(0), MustUint(nil))
+	for _, in := range tests {
+		is.Equal(uint64(2), MustUint(in))
+	}
 
+	// To int64
 	i64Val, err := ToInt64("2")
 	is.Nil(err)
 	is.Equal(int64(2), i64Val)
@@ -40,8 +58,11 @@ func TestStrToInt(t *testing.T) {
 	is.Nil(err)
 	is.Equal(int64(-2), i64Val)
 
-	is.Equal(int64(2), MustInt64("2"))
 	is.Equal(int64(0), MustInt64("2a"))
+	is.Equal(int64(0), MustInt64(nil))
+	for _, in := range tests {
+		is.Equal(int64(2), MustInt64(in))
+	}
 }
 
 func TestStrToFloat(t *testing.T) {
