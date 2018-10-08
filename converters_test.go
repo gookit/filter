@@ -124,6 +124,10 @@ func TestLowerOrUpperFirst(t *testing.T) {
 	is.Equal("", UpperFirst(""))
 	is.Equal("abc", LowerFirst("abc"))
 	is.Equal("Abc", UpperFirst("Abc"))
+
+	// UpperWord
+	is.Equal("", UpperWord(""))
+	is.Equal("Hello World!", UpperWord("hello world!"))
 }
 
 func TestSnakeCase(t *testing.T) {

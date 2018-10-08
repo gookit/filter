@@ -47,3 +47,17 @@ func TestUrlEncode(t *testing.T) {
 	is.Equal("a.com/?name%3D%E4%BD%A0%E5%A5%BD", UrlEncode("a.com/?name=你好"))
 	is.Equal("a.com/?name=你好", UrlDecode("a.com/?name%3D%E4%BD%A0%E5%A5%BD"))
 }
+
+func TestFiltration(t *testing.T) {
+	is := assert.New(t)
+
+	fl := New(map[string]interface{}{
+		"key0": " abc ",
+		"key1": "2",
+	})
+
+	is.Equal("", fl.Trimmed("not-exist"))
+	is.Equal("abc", fl.Trimmed("key0"))
+	is.Equal(2, fl.Int("key1"))
+	is.Equal(0, fl.Int("not-exist"))
+}
