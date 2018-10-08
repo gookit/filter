@@ -39,6 +39,7 @@ strArr := filter.Str2Array("a,b, c", ",")
 - `TrimRight(s string, cutSet ...string) string`
 - `LowerFirst(s string) string`
 - `UpperFirst(s string) string`
+- `UpperWord(s string) string`
 - `Unique(val interface{}) interface{}`
 - `StrToArray(str string, sep ...string) []string`
 - `StrToTime(s string, layouts ...string) (t time.Time, err error)`
