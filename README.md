@@ -32,6 +32,7 @@ strArr := filter.Str2Array("a,b, c", ",")
 - `CamelCase(str string, sep ...string) string`
 - `SnakeCase(str string, sep ...string) string`
 - `Email(s string) string`
+- `UrlDecode(s string) string`
 - `UrlEncode(s string) string`
 - `Substr(s string, pos, length int) string`
 - `Trim(str string, cutSet ...string) string`

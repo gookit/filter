@@ -53,7 +53,15 @@ func (f *Filtration) Int(key string) int {
 	return MustInt(val)
 }
 
+// AddRule
+func (f *Filtration) AddRule(field string, rule string) *Filtration {
+
+	return f
+}
+
 // Filtering
 func (f *Filtration) Filtering() error {
+
+
 	return nil
 }
