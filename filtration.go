@@ -62,6 +62,5 @@ func (f *Filtration) AddRule(field string, rule string) *Filtration {
 // Filtering
 func (f *Filtration) Filtering() error {
 
-
 	return nil
 }
