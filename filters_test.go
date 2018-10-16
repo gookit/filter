@@ -46,6 +46,8 @@ func TestUrlEncode(t *testing.T) {
 
 	is.Equal("a.com/?name%3D%E4%BD%A0%E5%A5%BD", UrlEncode("a.com/?name=你好"))
 	is.Equal("a.com/?name=你好", UrlDecode("a.com/?name%3D%E4%BD%A0%E5%A5%BD"))
+	is.Equal("a.com", UrlEncode("a.com"))
+	is.Equal("a.com", UrlDecode("a.com"))
 }
 
 func TestFiltration(t *testing.T) {

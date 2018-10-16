@@ -3,17 +3,6 @@ package filter
 import (
 	"net/url"
 	"strings"
-	"text/template"
-)
-
-// some alias methods.
-var (
-	Lower = strings.ToLower
-	Upper = strings.ToUpper
-	Title = strings.ToTitle
-	// escape string.
-	EscapeJS   = template.JSEscapeString
-	EscapeHTML = template.HTMLEscapeString
 )
 
 /*************************************************************

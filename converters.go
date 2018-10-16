@@ -6,7 +6,18 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"text/template"
 	"time"
+)
+
+// some alias methods.
+var (
+	Lower = strings.ToLower
+	Upper = strings.ToUpper
+	Title = strings.ToTitle
+	// escape string.
+	EscapeJS   = template.JSEscapeString
+	EscapeHTML = template.HTMLEscapeString
 )
 
 // some regex for convert string.
@@ -210,6 +221,16 @@ func MustBool(s string) bool {
 /*************************************************************
  * change string case
  *************************************************************/
+
+// Lowercase alias of the strings.ToLower()
+func Lowercase(s string) string {
+	return strings.ToLower(s)
+}
+
+// Uppercase alias of the strings.ToUpper()
+func Uppercase(s string) string {
+	return strings.ToUpper(s)
+}
 
 // UpperWord Change the first character of each word to uppercase
 func UpperWord(s string) string {

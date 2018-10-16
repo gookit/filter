@@ -109,11 +109,17 @@ func TestStrToBool(t *testing.T) {
 
 func TestLowerOrUpperFirst(t *testing.T) {
 	is := assert.New(t)
+
+	// Uppercase, Lowercase
+	is.Equal("ABC", Uppercase("abc"))
+	is.Equal("abc", Lowercase("ABC"))
+
 	tests := []string{
 		"Abc-abc",
 		"ABC-aBC",
 	}
 
+	// UpperFirst, LowerFirst
 	for _, sample := range tests {
 		ss := strings.Split(sample, "-")
 		is.Equal(ss[0], UpperFirst(ss[1]))
