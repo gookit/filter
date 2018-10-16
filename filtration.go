@@ -9,10 +9,10 @@ import (
 // Filtration definition. Sanitization Sanitizing Sanitize
 type Filtration struct {
 	err error
-	// mark has apply filters
-	filtered bool
 	// raw data
 	data map[string]interface{}
+	// mark has apply filters
+	filtered bool
 	// filter rules
 	filterRules []*FilterRule
 	// filtered data
@@ -35,7 +35,18 @@ func (f *Filtration) Raw(key string) (interface{}, bool) {
 
 // Get value by key
 func (f *Filtration) Get(key string) (interface{}, bool) {
-	return GetByPath(key, f.filteredData)
+	val, ok := GetByPath(key, f.filteredData)
+	if !ok {
+		val, ok = GetByPath(key, f.data)
+	}
+
+	return val, ok
+}
+
+// MustGet value by key
+func (f *Filtration) MustGet(key string) interface{} {
+	val, _ := f.Get(key)
+	return val
 }
 
 // Trimmed get trimmed string value
@@ -124,11 +135,6 @@ func newFilterRule(fields []string) *FilterRule {
 	}
 }
 
-// UseFilters add filter(s)
-func (r *FilterRule) UseFilters(filters ...string) *FilterRule {
-	return r.AddFilters(filters...)
-}
-
 // AddFilters add filter(s).
 // Usage:
 // 	r.AddFilters("int", "str2arr:,")
@@ -153,7 +159,7 @@ func (r *FilterRule) Apply(f *Filtration) (err error) {
 	// validate field
 	for _, field := range r.Fields() {
 		// get field value.
-		val, has := f.Raw(field)
+		val, has := f.Get(field)
 		if !has { // no field
 			continue
 		}
@@ -217,6 +223,41 @@ func callFilter(name string, val interface{}, args []string) (interface{}, error
 			return nil, errInvalidParam
 		}
 		val = TrimRight(str, args...)
+	case "lower":
+		if !isStr {
+			return nil, errInvalidParam
+		}
+		val = Lowercase(str)
+	case "upper":
+		if !isStr {
+			return nil, errInvalidParam
+		}
+		val = Uppercase(str)
+	case "lowerFirst":
+		if !isStr {
+			return nil, errInvalidParam
+		}
+		val = LowerFirst(str)
+	case "upperFirst":
+		if !isStr {
+			return nil, errInvalidParam
+		}
+		val = UpperFirst(str)
+	case "upperWord":
+		if !isStr {
+			return nil, errInvalidParam
+		}
+		val = UpperWord(str)
+	case "snakeCase":
+		if !isStr {
+			return nil, errInvalidParam
+		}
+		val = SnakeCase(str, args...)
+	case "camelCase":
+		if !isStr {
+			return nil, errInvalidParam
+		}
+		val = CamelCase(str, args...)
 	case "strToArray":
 		if !isStr {
 			return nil, errInvalidParam
@@ -227,7 +268,14 @@ func callFilter(name string, val interface{}, args []string) (interface{}, error
 			return nil, errInvalidParam
 		}
 		val, err = StrToTime(str)
-
+	case "stringsToInts":
+		if ss, ok := val.([]string); ok {
+			val, err = StringsToInts(ss)
+		} else {
+			return nil, errInvalidParam
+		}
+	default:
+		err = errInvalidParam
 	}
 
 	return val, err

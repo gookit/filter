@@ -63,20 +63,3 @@ func TestUrlEncode(t *testing.T) {
 	is.Equal("a.com", UrlEncode("a.com"))
 	is.Equal("a.com", UrlDecode("a.com"))
 }
-
-func TestFiltration(t *testing.T) {
-	is := assert.New(t)
-
-	fl := New(map[string]interface{}{
-		"key0": " abc ",
-		"key1": "2",
-	})
-
-	is.Equal("strToTime", Name("str2time"))
-	is.Equal("some", Name("some"))
-
-	is.Equal("", fl.Trimmed("not-exist"))
-	is.Equal("abc", fl.Trimmed("key0"))
-	is.Equal(2, fl.Int("key1"))
-	is.Equal(0, fl.Int("not-exist"))
-}

@@ -27,6 +27,7 @@ var filterAliases = map[string]string{
 	"strToArr":  "strToArray",
 	"str2time":  "strToTime",
 	// strings2ints
+	"strings2ints": "stringsToInts",
 }
 
 // Name get real filter name.

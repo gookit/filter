@@ -15,8 +15,8 @@ package filter provide filter, sanitize, convert golang data.
 ## Usage
 
 ```go
-intVal, err := filter.Int("20")
-strArr := filter.Str2Array("a,b, c", ",")
+intVal, err := filter.Int("20") // int(20)
+strArr := filter.Str2Array("a,b, c", ",") // []string{"a", "b", "c"}
 ```
 
 ## Filters & Converters
