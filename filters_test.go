@@ -55,11 +55,11 @@ func TestStrOperate(t *testing.T) {
 	is.Equal("", Substr("abcDEF", 23, 5))
 }
 
-func TestUrlEncode(t *testing.T) {
+func TestURLEnDecode(t *testing.T) {
 	is := assert.New(t)
 
-	is.Equal("a.com/?name%3D%E4%BD%A0%E5%A5%BD", UrlEncode("a.com/?name=你好"))
-	is.Equal("a.com/?name=你好", UrlDecode("a.com/?name%3D%E4%BD%A0%E5%A5%BD"))
-	is.Equal("a.com", UrlEncode("a.com"))
-	is.Equal("a.com", UrlDecode("a.com"))
+	is.Equal("a.com/?name%3D%E4%BD%A0%E5%A5%BD", URLEncode("a.com/?name=你好"))
+	is.Equal("a.com/?name=你好", URLDecode("a.com/?name%3D%E4%BD%A0%E5%A5%BD"))
+	is.Equal("a.com", URLEncode("a.com"))
+	is.Equal("a.com", URLDecode("a.com"))
 }

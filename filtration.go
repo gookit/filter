@@ -14,7 +14,7 @@ type Filtration struct {
 	// mark has apply filters
 	filtered bool
 	// filter rules
-	filterRules []*FilterRule
+	filterRules []*Rule
 	// filtered data
 	filteredData map[string]interface{}
 }
@@ -37,7 +37,7 @@ func New(data map[string]interface{}) *Filtration {
 // 	f.AddRule("name", "trim")
 // 	f.AddRule("age", "int")
 // 	f.AddRule("age", "trim|int")
-func (f *Filtration) AddRule(field string, rule string) *FilterRule {
+func (f *Filtration) AddRule(field string, rule string) *Rule {
 	rule = strings.TrimSpace(rule)
 	rules := stringSplit(strings.Trim(rule, "|:"), "|")
 	fields := stringSplit(field, ",")
@@ -46,7 +46,7 @@ func (f *Filtration) AddRule(field string, rule string) *FilterRule {
 		panic("filter: invalid fields and rule params")
 	}
 
-	r := newFilterRule(fields)
+	r := newRule(fields)
 	r.AddFilters(rules...)
 	f.filterRules = append(f.filterRules, r)
 
@@ -176,16 +176,16 @@ func (f *Filtration) FilteredData() map[string]interface{} {
  * filtering rule
  *************************************************************/
 
-// FilterRule definition
-type FilterRule struct {
+// Rule definition
+type Rule struct {
 	// fields to filter
 	fields []string
 	// filter list, can with args. eg. "int" "str2arr:,"
 	filters map[string]string
 }
 
-func newFilterRule(fields []string) *FilterRule {
-	return &FilterRule{
+func newRule(fields []string) *Rule {
+	return &Rule{
 		fields:  fields,
 		filters: make(map[string]string),
 	}
@@ -194,7 +194,7 @@ func newFilterRule(fields []string) *FilterRule {
 // AddFilters add filter(s).
 // Usage:
 // 	r.AddFilters("int", "str2arr:,")
-func (r *FilterRule) AddFilters(filters ...string) *FilterRule {
+func (r *Rule) AddFilters(filters ...string) *Rule {
 	for _, filterName := range filters {
 		pos := strings.IndexRune(filterName, ':')
 
@@ -211,7 +211,7 @@ func (r *FilterRule) AddFilters(filters ...string) *FilterRule {
 }
 
 // Apply rule for the rule fields
-func (r *FilterRule) Apply(f *Filtration) (err error) {
+func (r *Rule) Apply(f *Filtration) (err error) {
 	// validate field
 	for _, field := range r.Fields() {
 		// get field value.
@@ -223,7 +223,7 @@ func (r *FilterRule) Apply(f *Filtration) (err error) {
 		// call filters
 		for name, argStr := range r.filters {
 			args := parseArgString(argStr)
-			val, err = callFilter(name, val, args)
+			val, err = Apply(name, val, args)
 			if err != nil {
 				return err
 			}
@@ -237,11 +237,12 @@ func (r *FilterRule) Apply(f *Filtration) (err error) {
 }
 
 // Fields name get
-func (r *FilterRule) Fields() []string {
+func (r *Rule) Fields() []string {
 	return r.fields
 }
 
-func callFilter(name string, val interface{}, args []string) (interface{}, error) {
+// Apply a filter by name. for filter value.
+func Apply(name string, val interface{}, args []string) (interface{}, error) {
 	var err error
 	realName := Name(name)
 

@@ -87,6 +87,8 @@ func TestFiltration_Filtering(t *testing.T) {
 	data["msg2"] = "hello_world"
 	f = New(data)
 	f.AddRules(map[string]string{
+		"age":   "uint",
+		"money": "float",
 		"name":  "ucFirst",
 		"str1":  "trim|upper",
 		"sDate": "str2time",

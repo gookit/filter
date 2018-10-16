@@ -44,8 +44,8 @@ strArr := filter.Str2Array("a,b, c", ",") // []string{"a", "b", "c"}
 - `CamelCase(s string, sep ...string) string`
 - `SnakeCase(s string, sep ...string) string`
 - `Email(s string) string`
-- `UrlDecode(s string) string`
-- `UrlEncode(s string) string`
+- `URLDecode(s string) string`
+- `URLEncode(s string) string`
 - `EscapeJS(s string) string`
 - `EscapeHTML(s string) string`
 - `Unique(val interface{}) interface{}`
