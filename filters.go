@@ -5,6 +5,14 @@ import (
 	"strings"
 )
 
+var dontLimitType = map[string]int{
+	"int":   1,
+	"uint":  1,
+	"int64": 1,
+	//
+	"stringsToInts": 1,
+}
+
 var filterAliases = map[string]string{
 	"toInt":   "int",
 	"toUint":  "uint",

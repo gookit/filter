@@ -1,6 +1,7 @@
 package filter
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -17,10 +18,8 @@ func TestFiltration(t *testing.T) {
 	is.Equal("strToTime", Name("str2time"))
 	is.Equal("some", Name("some"))
 
-	is.Equal("", fl.Trimmed("not-exist"))
-	is.Equal("abc", fl.Trimmed("key0"))
-	is.Equal(2, fl.Int("key1"))
-	is.Equal(0, fl.Int("not-exist"))
+	is.Equal("", fl.String("key0"))
+	is.Equal(0, fl.Int("key1"))
 
 	val, ok := fl.Get("key1")
 	is.True(ok)
@@ -29,6 +28,10 @@ func TestFiltration(t *testing.T) {
 	val, ok = fl.Get("sub.k0")
 	is.True(ok)
 	is.Equal("v0", val)
+
+	val, ok = fl.Safe("key1")
+	is.False(ok)
+	is.Equal(nil, val)
 
 	val, ok = fl.Raw("key1")
 	is.True(ok)
@@ -41,7 +44,7 @@ func TestFiltration(t *testing.T) {
 func TestFiltration_Filtering(t *testing.T) {
 	is := assert.New(t)
 
-	f := New(map[string]interface{}{
+	data := map[string]interface{}{
 		"name":     "inhere",
 		"age":      "50",
 		"money":    "50.34",
@@ -49,7 +52,9 @@ func TestFiltration_Filtering(t *testing.T) {
 		"sub":      map[string]string{"k0": "v0"},
 		"sub1":     []string{"1", "2"},
 		"tags":     "go;lib",
-	})
+		"str1":     " word ",
+	}
+	f := New(data)
 	f.AddRule("name", "upper")
 	f.AddRule("age", "int")
 	f.AddRule("money", "float")
@@ -58,8 +63,45 @@ func TestFiltration_Filtering(t *testing.T) {
 	f.AddRule("tags", "str2arr:;")
 
 	is.Nil(f.Filtering())
+	is.Nil(f.Filtering())
+	is.True(f.IsOK())
+	// get value
+	is.True(f.Bool("remember"))
+	is.Equal(50, f.Int("age"))
+	is.Equal(0, f.Int("not-exist"))
 	is.Equal(50, f.MustGet("age"))
+	is.Equal(int64(50), f.Int64("age"))
+	is.Equal(int64(0), f.Int64("not-exist"))
 	is.Equal(50.34, f.MustGet("money"))
 	is.Equal([]int{1, 2}, f.MustGet("sub1"))
 	is.Equal([]string{"go", "lib"}, f.MustGet("tags"))
+	is.Equal("INHERE", f.FilteredData()["name"])
+
+	f = New(data)
+	f.AddRule("name", "int")
+	is.Error(f.Sanitize())
+
+	data["sDate"] = "2018-10-16 12:34"
+	data["msg"] = " hello world "
+	data["msg1"] = "helloWorld"
+	data["msg2"] = "hello_world"
+	f = New(data)
+	f.AddRules(map[string]string{
+		"name":  "ucFirst",
+		"str1":  "trim|upper",
+		"sDate": "str2time",
+		"msg":   "trim|ucWord",
+		"msg1":  "snake",
+		"msg2":  "camel",
+	})
+	is.Nil(f.Sanitize())
+	is.Equal("Inhere", f.String("name"))
+	is.Equal("WORD", f.String("str1"))
+	is.Equal("Hello World", f.String("msg"))
+	is.Equal("hello_world", f.String("msg1"))
+	is.Equal("helloWorld", f.String("msg2"))
+
+	sTime, ok := f.Safe("sDate")
+	is.True(ok)
+	is.Equal("2018-10-16 12:34:00 +0000 UTC", fmt.Sprintf("%v", sTime))
 }
