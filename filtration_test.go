@@ -73,6 +73,7 @@ func TestFiltration_Filtering(t *testing.T) {
 	is.True(f.IsOK())
 	// get value
 	is.True(f.Bool("remember"))
+	is.False(f.Bool("not-exist"))
 	is.Equal(50, f.Int("age"))
 	is.Equal(0, f.Int("not-exist"))
 	is.Equal(50, f.MustGet("age"))
@@ -114,4 +115,12 @@ func TestFiltration_Filtering(t *testing.T) {
 	sTime, ok := f.Safe("sDate")
 	is.True(ok)
 	is.Equal("2018-10-16 12:34:00 +0000 UTC", fmt.Sprintf("%v", sTime))
+
+	data["url"] = "a.com?p=1"
+	f = New(data)
+	f.AddRule("url", "urlEncode")
+	f.AddRule("msg1", "substr:0,2")
+	is.Nil(f.Sanitize())
+	is.Equal("he", f.String("msg1"))
+	is.Equal("a.com?p%3D1", f.String("url"))
 }

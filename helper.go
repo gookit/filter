@@ -55,6 +55,12 @@ func Apply(name string, val interface{}, args []string) (interface{}, error) {
 		val = TrimLeft(str, args...)
 	case "rtrim":
 		val = TrimRight(str, args...)
+	case "title":
+		val = Title(str)
+	case "email":
+		val = Email(str)
+	case "substr":
+		val = Substr(str, MustInt(args[0]), MustInt(args[1]))
 	case "lower":
 		val = Lowercase(str)
 	case "upper":
