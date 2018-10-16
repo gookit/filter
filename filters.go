@@ -5,17 +5,50 @@ import (
 	"strings"
 )
 
+var filterAliases = map[string]string{
+	"toInt":   "int",
+	"toUint":  "uint",
+	"toInt64": "int64",
+	"toBool":  "bool",
+	"camel":   "camelCase",
+	"snake":   "snakeCase",
+	//
+	"lcFirst":    "lowerFirst",
+	"ucFirst":    "upperFirst",
+	"ucWord":     "upperWord",
+	"trimSpace":  "trim",
+	"uppercase":  "upper",
+	"lowercase":  "lower",
+	"escapeJs":   "escapeJS",
+	"escapeHtml": "escapeHTML",
+	//
+	"str2arr":   "strToArray",
+	"str2array": "strToArray",
+	"strToArr":  "strToArray",
+	"str2time":  "strToTime",
+	// strings2ints
+}
+
+// Name get real filter name.
+func Name(name string) string {
+	if rName, ok := filterAliases[name]; ok {
+		return rName
+	}
+
+	return name
+}
+
 /*************************************************************
  * built in filters
  *************************************************************/
 
 // Trim string
-func Trim(str string, cutSet ...string) string {
-	if len(cutSet) > 0 {
-		return strings.Trim(str, cutSet[0])
+func Trim(s string, cutSet ...string) string {
+	if len(cutSet) > 0 && cutSet[0] != "" {
+		return strings.Trim(s, cutSet[0])
 	}
 
-	return strings.TrimSpace(str)
+	return strings.TrimSpace(s)
 }
 
 // TrimLeft char in the string.
@@ -34,6 +67,21 @@ func TrimRight(s string, cutSet ...string) string {
 	}
 
 	return strings.TrimRight(s, " ")
+}
+
+// TrimStrings trim string slice item.
+func TrimStrings(ss []string, cutSet ...string) (ns []string) {
+	hasCutSet := len(cutSet) > 0 && cutSet[0] != ""
+
+	for _, str := range ss {
+		if hasCutSet {
+			ns = append(ns, strings.Trim(str, cutSet[0]))
+		} else {
+			ns = append(ns, strings.TrimSpace(str))
+		}
+	}
+
+	return
 }
 
 // UrlEncode encode url string.
@@ -96,19 +144,4 @@ func Email(s string) string {
 
 	// According to rfc5321, "The local-part of a mailbox MUST BE treated as case sensitive"
 	return s[0:i] + "@" + strings.ToLower(s[i+1:])
-}
-
-func stringSplit(str, sep string) (ss []string) {
-	str = strings.TrimSpace(str)
-	if str == "" {
-		return
-	}
-
-	for _, val := range strings.Split(str, sep) {
-		if val = strings.TrimSpace(val); val != "" {
-			ss = append(ss, val)
-		}
-	}
-
-	return
 }

@@ -36,18 +36,18 @@ var (
  * string to int,bool,float
  *************************************************************/
 
-// Int convert
+// Int convert string to int
 func Int(in interface{}) (int, error) {
 	return ToInt(in)
 }
 
-// MustInt convert
+// MustInt convert string to int
 func MustInt(in interface{}) int {
 	val, _ := ToInt(in)
 	return val
 }
 
-// ToInt convert
+// ToInt convert string to int
 func ToInt(in interface{}) (iVal int, err error) {
 	switch tVal := in.(type) {
 	case int:
@@ -83,18 +83,18 @@ func ToInt(in interface{}) (iVal int, err error) {
 	return
 }
 
-// Uint convert
+// Uint convert string to uint
 func Uint(in interface{}) (uint64, error) {
 	return ToUint(in)
 }
 
-// MustUint convert
+// MustUint convert string to uint
 func MustUint(in interface{}) uint64 {
 	val, _ := ToUint(in)
 	return val
 }
 
-// ToUint convert
+// ToUint convert string to uint
 func ToUint(in interface{}) (u64 uint64, err error) {
 	switch tVal := in.(type) {
 	case int:
@@ -130,12 +130,12 @@ func ToUint(in interface{}) (u64 uint64, err error) {
 	return
 }
 
-// Int64 convert
+// Int64 convert string to int64
 func Int64(in interface{}) (int64, error) {
 	return ToInt64(in)
 }
 
-// ToInt64 convert
+// ToInt64 convert string to int64
 func ToInt64(in interface{}) (i64 int64, err error) {
 	switch tVal := in.(type) {
 	case string:
@@ -177,23 +177,23 @@ func MustInt64(in interface{}) int64 {
 	return i64
 }
 
-// Float convert
-func Float(str string) (float64, error) {
-	return ToFloat(str)
+// Float convert string to float
+func Float(s string) (float64, error) {
+	return ToFloat(s)
 }
 
-// ToFloat convert
-func ToFloat(str string) (float64, error) {
-	return strconv.ParseFloat(Trim(str), 0)
+// ToFloat convert string to float
+func ToFloat(s string) (float64, error) {
+	return strconv.ParseFloat(Trim(s), 0)
 }
 
-// MustFloat convert
-func MustFloat(str string) float64 {
-	val, _ := strconv.ParseFloat(Trim(str), 0)
+// MustFloat convert string to float
+func MustFloat(s string) float64 {
+	val, _ := strconv.ParseFloat(Trim(s), 0)
 	return val
 }
 
-// ToBool convert.
+// ToBool convert string to bool
 func ToBool(s string) (bool, error) {
 	return Bool(s)
 }
@@ -276,13 +276,13 @@ func UpperFirst(s string) string {
 }
 
 // SnakeCase convert. eg "RangePrice" -> "range_price"
-func SnakeCase(str string, sep ...string) string {
+func SnakeCase(s string, sep ...string) string {
 	sepChar := "_"
 	if len(sep) > 0 {
 		sepChar = sep[0]
 	}
 
-	newStr := toSnakeReg.ReplaceAllStringFunc(str, func(s string) string {
+	newStr := toSnakeReg.ReplaceAllStringFunc(s, func(s string) string {
 		return sepChar + LowerFirst(s)
 	})
 
@@ -294,15 +294,15 @@ func SnakeCase(str string, sep ...string) string {
 // 	"range_price" -> "rangePrice"
 // 	"range price" -> "rangePrice"
 // 	"range-price" -> "rangePrice"
-func CamelCase(str string, sep ...string) string {
+func CamelCase(s string, sep ...string) string {
 	sepChar := "_"
 	if len(sep) > 0 {
 		sepChar = sep[0]
 	}
 
 	// not contains sep char
-	if !strings.Contains(str, sepChar) {
-		return str
+	if !strings.Contains(s, sepChar) {
+		return s
 	}
 
 	// get regexp instance
@@ -311,7 +311,7 @@ func CamelCase(str string, sep ...string) string {
 		rgx = regexp.MustCompile(regexp.QuoteMeta(sepChar) + "+[a-zA-Z]")
 	}
 
-	return rgx.ReplaceAllStringFunc(str, func(s string) string {
+	return rgx.ReplaceAllStringFunc(s, func(s string) string {
 		s = strings.TrimLeft(s, sepChar)
 		return UpperFirst(s)
 	})
@@ -322,17 +322,31 @@ func CamelCase(str string, sep ...string) string {
  *************************************************************/
 
 // StrToArray alias of the StrToSlice()
-func StrToArray(str string, sep ...string) []string {
-	return StrToSlice(str, sep...)
+func StrToArray(s string, sep ...string) []string {
+	return StrToSlice(s, sep...)
 }
 
 // StrToSlice split string to array.
-func StrToSlice(str string, sep ...string) []string {
+func StrToSlice(s string, sep ...string) []string {
 	if len(sep) > 0 {
-		return stringSplit(str, sep[0])
+		return stringSplit(s, sep[0])
 	}
 
-	return stringSplit(str, ",")
+	return stringSplit(s, ",")
+}
+
+// StringsToInts string slice to int slice
+func StringsToInts(ss []string) (ints []int, err error) {
+	for _, str := range ss {
+		iVal, err := strconv.Atoi(str)
+		if err != nil {
+			return []int{}, err
+		}
+
+		ints = append(ints, iVal)
+	}
+
+	return
 }
 
 // StrToTime convert date string to time.Time

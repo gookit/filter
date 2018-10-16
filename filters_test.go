@@ -1,6 +1,7 @@
 package filter
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -8,13 +9,20 @@ import (
 func TestTrim(t *testing.T) {
 	is := assert.New(t)
 
-	is.Equal("abc", Trim("abc "))
-	is.Equal("abc", Trim(" abc"))
-	is.Equal("abc", Trim(" abc "))
+	// Trim
+	tests := map[string]string{
+		"abc ":  "",
+		" abc":  "",
+		" abc ": "",
+		"abc,,": ",",
+		"abc,.": ",.",
+	}
+	for sample, cutSet := range tests {
+		is.Equal("abc", Trim(sample, cutSet))
+	}
 
-	is.Equal("abc", Trim("abc,,", ","))
-	is.Equal("abc", Trim("abc,.", ",."))
 	is.Equal("abc", Trim("abc,.", ".,"))
+	// is.Equal("", Trim(nil))
 
 	// TrimLeft
 	is.Equal("abc ", TrimLeft(" abc "))
@@ -24,6 +32,12 @@ func TestTrim(t *testing.T) {
 	// TrimRight
 	is.Equal(" abc", TrimRight(" abc "))
 	is.Equal(", abc", TrimRight(", abc ,", ", "))
+
+	// TrimStrings
+	ss := TrimStrings([]string{" a", "b ", " c "})
+	is.Equal("[a b c]", fmt.Sprint(ss))
+	ss = TrimStrings([]string{",a", "b.", ",.c,"}, ",.")
+	is.Equal("[a b c]", fmt.Sprint(ss))
 }
 
 func TestEmail(t *testing.T) {
@@ -57,6 +71,9 @@ func TestFiltration(t *testing.T) {
 		"key0": " abc ",
 		"key1": "2",
 	})
+
+	is.Equal("strToTime", Name("str2time"))
+	is.Equal("some", Name("some"))
 
 	is.Equal("", fl.Trimmed("not-exist"))
 	is.Equal("abc", fl.Trimmed("key0"))

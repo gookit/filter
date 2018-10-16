@@ -201,6 +201,17 @@ func TestStr2Array(t *testing.T) {
 	is.Len(ss, 0)
 }
 
+func TestStringsToInts(t *testing.T) {
+	is := assert.New(t)
+
+	ints, err := StringsToInts([]string{"1", "2"})
+	is.Nil(err)
+	is.Equal("[]int{1, 2}", fmt.Sprintf("%#v", ints))
+
+	_, err = StringsToInts([]string{"a", "b"})
+	is.Error(err)
+}
+
 func TestStrToTime(t *testing.T) {
 	is := assert.New(t)
 

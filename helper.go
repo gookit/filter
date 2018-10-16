@@ -45,3 +45,30 @@ func GetByPath(key string, mp map[string]interface{}) (val interface{}, ok bool)
 
 	return item, true
 }
+
+func parseArgString(argStr string) (ss []string) {
+	if argStr == "" { // no arg
+		return
+	}
+
+	if len(argStr) == 1 { // one char
+		return []string{argStr}
+	}
+
+	return stringSplit(argStr, ",")
+}
+
+func stringSplit(str, sep string) (ss []string) {
+	str = strings.TrimSpace(str)
+	if str == "" {
+		return
+	}
+
+	for _, val := range strings.Split(str, sep) {
+		if val = strings.TrimSpace(val); val != "" {
+			ss = append(ss, val)
+		}
+	}
+
+	return
+}
