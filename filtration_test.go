@@ -49,10 +49,12 @@ func TestFiltration_Filtering(t *testing.T) {
 		"age":      "50",
 		"money":    "50.34",
 		"remember": "yes",
-		"sub":      map[string]string{"k0": "v0"},
-		"sub1":     []string{"1", "2"},
-		"tags":     "go;lib",
-		"str1":     " word ",
+		//
+		"sub":  map[string]string{"k0": "v0"},
+		"sub1": []string{"1", "2"},
+		"tags": "go;lib",
+		"str1": " word ",
+		"ids":  []int{1, 2, 2, 1},
 	}
 	f := New(data)
 	f.AddRule("name", "upper")
@@ -61,6 +63,10 @@ func TestFiltration_Filtering(t *testing.T) {
 	f.AddRule("remember", "bool")
 	f.AddRule("sub1", "strings2ints")
 	f.AddRule("tags", "str2arr:;")
+	f.AddRule("ids", "unique")
+	f.AddRule("str1", "ltrim")
+	f.AddRule("str1", "rtrim")
+	f.AddRule("not-exist", "unique")
 
 	is.Nil(f.Filtering())
 	is.Nil(f.Filtering())
@@ -74,8 +80,10 @@ func TestFiltration_Filtering(t *testing.T) {
 	is.Equal(int64(0), f.Int64("not-exist"))
 	is.Equal(50.34, f.MustGet("money"))
 	is.Equal([]int{1, 2}, f.MustGet("sub1"))
+	is.Len(f.MustGet("ids"), 2)
 	is.Equal([]string{"go", "lib"}, f.MustGet("tags"))
 	is.Equal("INHERE", f.FilteredData()["name"])
+	is.Equal("word", f.String("str1"))
 
 	f = New(data)
 	f.AddRule("name", "int")

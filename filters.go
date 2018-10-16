@@ -6,10 +6,12 @@ import (
 )
 
 var dontLimitType = map[string]int{
-	"int":   1,
-	"uint":  1,
-	"int64": 1,
+	"int":    1,
+	"uint":   1,
+	"int64":  1,
+	"unique": 1,
 	//
+	"trimStrings":   1,
 	"stringsToInts": 1,
 }
 
@@ -24,11 +26,16 @@ var filterAliases = map[string]string{
 	"lcFirst":    "lowerFirst",
 	"ucFirst":    "upperFirst",
 	"ucWord":     "upperWord",
+	"trimList":   "trimStrings",
 	"trimSpace":  "trim",
 	"uppercase":  "upper",
 	"lowercase":  "lower",
 	"escapeJs":   "escapeJS",
 	"escapeHtml": "escapeHTML",
+	"urlEncode":  "URLEncode",
+	"encodeUrl":  "URLEncode",
+	"urlDecode":  "URLDecode",
+	"decodeUrl":  "URLDecode",
 	//
 	"str2arr":   "strToArray",
 	"str2array": "strToArray",
@@ -117,13 +124,58 @@ func URLDecode(s string) string {
 
 // Unique value in the given array, slice.
 func Unique(val interface{}) interface{} {
-	// switch tv := val.(type) {
-	// case []string:
-	// 	cp := make([]string, len(tv))
-	// 	copy(cp, tv)
-	// }
+	switch tv := val.(type) {
+	case []int:
+		mp := make(map[int]int)
+		for _, sVal := range tv {
+			mp[sVal] = 1
+		}
 
-	return val // todo
+		// no repeat value
+		if len(tv) == len(mp) {
+			return tv
+		}
+
+		var ns []int
+		for sVal := range mp {
+			ns = append(ns, sVal)
+		}
+		return ns
+	case []int64:
+		mp := make(map[int64]int)
+		for _, sVal := range tv {
+			mp[sVal] = 1
+		}
+
+		// no repeat value
+		if len(tv) == len(mp) {
+			return tv
+		}
+
+		var ns []int64
+		for sVal := range mp {
+			ns = append(ns, sVal)
+		}
+		return ns
+	case []string:
+		mp := make(map[string]int)
+		for _, sVal := range tv {
+			mp[sVal] = 1
+		}
+
+		// no repeat value
+		if len(tv) == len(mp) {
+			return tv
+		}
+
+		var ns []string
+		for sVal := range mp {
+			ns = append(ns, sVal)
+		}
+		return ns
+	}
+
+	return val
 }
 
 // Substr cut string

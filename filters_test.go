@@ -63,3 +63,14 @@ func TestURLEnDecode(t *testing.T) {
 	is.Equal("a.com", URLEncode("a.com"))
 	is.Equal("a.com", URLDecode("a.com"))
 }
+
+func TestUnique(t *testing.T) {
+	is := assert.New(t)
+
+	is.Len(Unique([]int{1, 2}), 2)
+	is.Len(Unique([]int{1, 2, 2, 1}), 2)
+	is.Len(Unique([]int64{1, 2}), 2)
+	is.Len(Unique([]int64{1, 2, 2, 1}), 2)
+	is.Len(Unique([]string{"a", "b"}), 2)
+	is.Len(Unique([]string{"a", "b", "b"}), 2)
+}

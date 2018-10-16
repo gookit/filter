@@ -1,6 +1,90 @@
 package filter
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
+
+// Apply a filter by name. for filter value.
+func Apply(name string, val interface{}, args []string) (interface{}, error) {
+	var err error
+	realName := Name(name)
+
+	// don't Limit value type
+	if _, ok := dontLimitType[realName]; ok {
+		switch realName {
+		case "int":
+			val, err = ToInt(val)
+		case "uint":
+			val, err = ToUint(val)
+		case "int64":
+			val, err = ToInt64(val)
+		case "unique":
+			val = Unique(val)
+		case "trimStrings":
+			if ss, ok := val.([]string); ok {
+				val = TrimStrings(ss)
+			} else {
+				err = errInvalidParam
+			}
+		case "stringsToInts":
+			if ss, ok := val.([]string); ok {
+				val, err = StringsToInts(ss)
+			} else {
+				err = errInvalidParam
+			}
+		}
+
+		return val, err
+	}
+
+	str, isString := val.(string)
+	if !isString {
+		return nil, fmt.Errorf("filter: '%s' only use for string type value", name)
+	}
+
+	// val is must be string.
+	switch realName {
+	case "bool":
+		val, err = ToBool(str)
+	case "float":
+		val, err = ToFloat(str)
+	case "trim":
+		val = Trim(str, args...)
+	case "ltrim":
+		val = TrimLeft(str, args...)
+	case "rtrim":
+		val = TrimRight(str, args...)
+	case "lower":
+		val = Lowercase(str)
+	case "upper":
+		val = Uppercase(str)
+	case "lowerFirst":
+		val = LowerFirst(str)
+	case "upperFirst":
+		val = UpperFirst(str)
+	case "upperWord":
+		val = UpperWord(str)
+	case "snakeCase":
+		val = SnakeCase(str, args...)
+	case "camelCase":
+		val = CamelCase(str, args...)
+	case "URLEncode":
+		val = URLEncode(str)
+	case "URLDecode":
+		val = URLDecode(str)
+	case "escapeJS":
+		val = EscapeJS(str)
+	case "escapeHTML":
+		val = EscapeHTML(str)
+	case "strToArray":
+		val = StrToArray(str, args...)
+	case "strToTime":
+		val, err = StrToTime(str)
+	}
+
+	return val, err
+}
 
 // GetByPath get value from a map[string]interface{}. eg "top" "top.sub"
 func GetByPath(key string, mp map[string]interface{}) (val interface{}, ok bool) {

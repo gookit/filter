@@ -48,7 +48,7 @@ strArr := filter.Str2Array("a,b, c", ",") // []string{"a", "b", "c"}
 - `URLEncode(s string) string`
 - `EscapeJS(s string) string`
 - `EscapeHTML(s string) string`
-- `Unique(val interface{}) interface{}`
+- `Unique(val interface{}) interface{}` Will remove duplicate values, use for `[]int` `[]int64` `[]string`
 - `StrToArray(s string, sep ...string) []string`
 - `StrToTime(s string, layouts ...string) (t time.Time, err error)`
 - `StringsToInts(ss []string) (ints []int, err error)`
