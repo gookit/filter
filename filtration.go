@@ -180,14 +180,17 @@ func (f *Filtration) FilteredData() map[string]interface{} {
 type Rule struct {
 	// fields to filter
 	fields []string
-	// filter list, can with args. eg. "int" "str2arr:,"
-	filters map[string]string
+	// filter name list
+	filters []string
+	// filter args. { index: "args" }
+	filterArgs map[int]string
 }
 
 func newRule(fields []string) *Rule {
 	return &Rule{
-		fields:  fields,
-		filters: make(map[string]string),
+		fields: fields,
+		// init map
+		filterArgs: make(map[int]string),
 	}
 }
 
@@ -197,13 +200,13 @@ func newRule(fields []string) *Rule {
 func (r *Rule) AddFilters(filters ...string) *Rule {
 	for _, filterName := range filters {
 		pos := strings.IndexRune(filterName, ':')
-
-		// has filter args
-		if pos > 0 {
+		if pos > 0 { // has filter args
 			name := filterName[:pos]
-			r.filters[name] = filterName[pos+1:]
+			index := len(r.filters)
+			r.filters = append(r.filters, name)
+			r.filterArgs[index] = filterName[pos+1:]
 		} else {
-			r.filters[filterName] = ""
+			r.filters = append(r.filters, filterName)
 		}
 	}
 
@@ -221,8 +224,8 @@ func (r *Rule) Apply(f *Filtration) (err error) {
 		}
 
 		// call filters
-		for name, argStr := range r.filters {
-			args := parseArgString(argStr)
+		for i, name := range r.filters {
+			args := parseArgString(r.filterArgs[i])
 			val, err = Apply(name, val, args)
 			if err != nil {
 				return err

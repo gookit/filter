@@ -39,6 +39,19 @@ func TestFiltration(t *testing.T) {
 	val, ok = fl.Raw("not-exist")
 	is.False(ok)
 	is.Equal(nil, val)
+
+	f := New(map[string]interface{}{
+		"name":  " inhere ",
+		"email": " my@email.com ",
+	})
+	f.AddRules(map[string]string{
+		"email": "email",
+		"name":  "trim|ucFirst",
+	})
+
+	is.Nil(f.Sanitize())
+	is.Equal("Inhere", f.String("name"))
+	is.Equal("my@email.com", f.String("email"))
 }
 
 func TestFiltration_Filtering(t *testing.T) {
@@ -90,6 +103,7 @@ func TestFiltration_Filtering(t *testing.T) {
 	f.AddRule("name", "int")
 	is.Error(f.Sanitize())
 
+	data["name"] = " inhere "
 	data["sDate"] = "2018-10-16 12:34"
 	data["msg"] = " hello world "
 	data["msg1"] = "helloWorld"
@@ -98,7 +112,7 @@ func TestFiltration_Filtering(t *testing.T) {
 	f.AddRules(map[string]string{
 		"age":   "uint",
 		"money": "float",
-		"name":  "ucFirst",
+		"name":  "trim|ucFirst",
 		"str1":  "trim|upper",
 		"sDate": "str2time",
 		"msg":   "trim|ucWord",
