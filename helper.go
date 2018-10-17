@@ -51,9 +51,9 @@ func Apply(name string, val interface{}, args []string) (interface{}, error) {
 		val, err = ToFloat(str)
 	case "trim":
 		val = Trim(str, args...)
-	case "ltrim":
+	case "trimLeft":
 		val = TrimLeft(str, args...)
-	case "rtrim":
+	case "trimRight":
 		val = TrimRight(str, args...)
 	case "title":
 		val = Title(str)
@@ -85,8 +85,8 @@ func Apply(name string, val interface{}, args []string) (interface{}, error) {
 		val = EscapeHTML(str)
 	case "strToInts":
 		val, err = StrToInts(str, args...)
-	case "strToArray":
-		val = StrToArray(str, args...)
+	case "strToSlice":
+		val = StrToSlice(str, args...)
 	case "strToTime":
 		val, err = StrToTime(str)
 	}

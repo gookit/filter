@@ -73,4 +73,5 @@ func TestUnique(t *testing.T) {
 	is.Len(Unique([]int64{1, 2, 2, 1}), 2)
 	is.Len(Unique([]string{"a", "b"}), 2)
 	is.Len(Unique([]string{"a", "b", "b"}), 2)
+	is.Equal("invalid", Unique("invalid"))
 }

@@ -8,6 +8,7 @@
 package filter
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 )
@@ -182,6 +183,16 @@ func (f *Filtration) String(key string) string {
 // FilteredData get filtered data
 func (f *Filtration) FilteredData() map[string]interface{} {
 	return f.filteredData
+}
+
+// BindStruct bind the filtered data to struct.
+func (f *Filtration) BindStruct(ptr interface{}) error {
+	bts, err := json.Marshal(f.filteredData)
+	if err != nil {
+		return err
+	}
+
+	return json.Unmarshal(bts, ptr)
 }
 
 /*************************************************************

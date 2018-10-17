@@ -22,6 +22,8 @@ var filterAliases = map[string]string{
 	"toBool":  "bool",
 	"camel":   "camelCase",
 	"snake":   "snakeCase",
+	"ltrim":   "trimLeft",
+	"rtrim":   "trimRight",
 	//
 	"lcFirst":    "lowerFirst",
 	"ucFirst":    "upperFirst",
@@ -38,9 +40,10 @@ var filterAliases = map[string]string{
 	"decodeUrl":  "URLDecode",
 	//
 	"str2ints":  "strToInts",
-	"str2arr":   "strToArray",
-	"str2array": "strToArray",
-	"strToArr":  "strToArray",
+	"str2arr":   "strToSlice",
+	"str2list":  "strToSlice",
+	"str2array": "strToSlice",
+	"strToArr":  "strToSlice",
 	"str2time":  "strToTime",
 	// strings2ints
 	"strings2ints": "stringsToInts",

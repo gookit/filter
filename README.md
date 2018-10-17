@@ -23,7 +23,7 @@ stirngs := filter.Str2Slice("a,b, c", ",") // []string{"a", "b", "c"}
 
 ```go
 data := map[string]interface{}{
-    "name":     "inhere",
+    "name":     " inhere ",
     "age":      "50",
     "money":    "50.34",
     // 
@@ -35,22 +35,26 @@ data := map[string]interface{}{
     "ids":  []int{1, 2, 2, 1},
 }
 f := filter.New(data)
-f.AddRule("name", "upper")
-f.AddRule("age", "int")
 f.AddRule("money", "float")
 f.AddRule("remember", "bool")
 f.AddRule("sub1", "strings2ints")
 f.AddRule("tags", "str2arr:;")
 f.AddRule("ids", "unique")
-f.AddRule("str1", "ltrim")
-f.AddRule("str1", "rtrim")
+f.AddRule("str1", "ltrim|rtrim")
 f.AddRule("not-exist", "unique")
+// add multi
+f.AddRules(map[string]string{
+    "age": "trim|int",
+    "name": "trim|ucFirst",
+})
 
-f.Filtering() // apply all added rules for data.
+// apply all added rules for data.
+f.Filtering() 
 
 // get filtered data
 newData := f.FilteredData()
 fmt.Printf("%#v\n", newData)
+// f.BindStruct(&user)
 ```
 
 Output:

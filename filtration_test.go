@@ -13,6 +13,8 @@ func TestFiltration(t *testing.T) {
 		"key0": " abc ",
 		"key1": "2",
 		"sub":  map[string]string{"k0": "v0"},
+		"sub1": map[string]interface{}{"k0": "v0"},
+		"sub2": map[interface{}]interface{}{"k0": "v0"},
 	})
 
 	is.Equal("strToTime", Name("str2time"))
@@ -25,6 +27,8 @@ func TestFiltration(t *testing.T) {
 	is.True(ok)
 	is.Equal("2", val)
 
+	_, ok = fl.Get("sub.not-exist")
+	is.False(ok)
 	val, ok = fl.Get("sub.k0")
 	is.True(ok)
 	is.Equal("v0", val)
@@ -32,6 +36,16 @@ func TestFiltration(t *testing.T) {
 	val, ok = fl.Safe("key1")
 	is.False(ok)
 	is.Equal(nil, val)
+
+	_, ok = fl.Raw("sub1.not-exist")
+	is.False(ok)
+	val, ok = fl.Raw("sub1.k0")
+	is.True(ok)
+	is.Equal("v0", val)
+
+	val, ok = fl.Raw("sub2.k0")
+	is.True(ok)
+	is.Equal("v0", val)
 
 	val, ok = fl.Raw("key1")
 	is.True(ok)
@@ -82,6 +96,7 @@ func TestFiltration_Filtering(t *testing.T) {
 		"sub1": []string{"1", "2"},
 		"tags": "go;lib",
 		"str1": " word ",
+		"str2": "HELLO",
 		"ids":  []int{1, 2, 2, 1},
 	}
 	f := New(data)
@@ -94,6 +109,7 @@ func TestFiltration_Filtering(t *testing.T) {
 	f.AddRule("ids", "unique")
 	f.AddRule("str1", "ltrim|rtrim")
 	f.AddRule("not-exist", "unique")
+	f.AddRule("str2", "lower")
 
 	is.Nil(f.Filtering())
 	is.Nil(f.Filtering())
@@ -113,6 +129,7 @@ func TestFiltration_Filtering(t *testing.T) {
 	is.Equal([]string{"go", "lib"}, f.MustGet("tags"))
 	is.Equal("INHERE", f.FilteredData()["name"])
 	is.Equal("word", f.String("str1"))
+	is.Equal("hello", f.String("str2"))
 
 	f = New(data)
 	f.AddRule("name", "int")
@@ -133,6 +150,7 @@ func TestFiltration_Filtering(t *testing.T) {
 		"msg":   "trim|ucWord",
 		"msg1":  "snake",
 		"msg2":  "camel",
+		"str2":  "lowerFirst",
 	})
 	is.Nil(f.Sanitize())
 	is.Equal("Inhere", f.String("name"))
@@ -140,6 +158,7 @@ func TestFiltration_Filtering(t *testing.T) {
 	is.Equal("Hello World", f.String("msg"))
 	is.Equal("hello_world", f.String("msg1"))
 	is.Equal("helloWorld", f.String("msg2"))
+	is.Equal("hELLO", f.String("str2"))
 
 	sTime, ok := f.Safe("sDate")
 	is.True(ok)
@@ -152,4 +171,23 @@ func TestFiltration_Filtering(t *testing.T) {
 	is.Nil(f.Sanitize())
 	is.Equal("he", f.String("msg1"))
 	is.Equal("a.com?p%3D1", f.String("url"))
+
+	// bind
+	f = New(map[string]interface{}{
+		"name": " inhere ",
+		"age":  " 89 ",
+	})
+	f.AddRules(map[string]string{
+		"age":  "trim|int",
+		"name": "trim|ucFirst",
+	})
+	is.Nil(f.Filtering())
+	user := &struct {
+		Age  int
+		Name string
+	}{}
+	err := f.BindStruct(user)
+	is.Nil(err)
+	is.Equal(89, user.Age)
+	is.Equal("Inhere", user.Name)
 }
