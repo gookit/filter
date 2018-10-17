@@ -12,11 +12,60 @@ package filter provide filter, sanitize, convert golang data.
 - [godoc for gopkg](https://godoc.org/gopkg.in/gookit/filter.v1)
 - [godoc for github](https://godoc.org/github.com/gookit/filter)
 
-## Usage
+## Func Usage
 
 ```go
 intVal, err := filter.Int("20") // int(20)
-strArr := filter.Str2Array("a,b, c", ",") // []string{"a", "b", "c"}
+stirngs := filter.Str2Slice("a,b, c", ",") // []string{"a", "b", "c"}
+```
+
+## Filtration
+
+```go
+data := map[string]interface{}{
+    "name":     "inhere",
+    "age":      "50",
+    "money":    "50.34",
+    // 
+    "remember": "yes",
+    //
+    "sub1": []string{"1", "2"},
+    "tags": "go;lib",
+    "str1": " word ",
+    "ids":  []int{1, 2, 2, 1},
+}
+f := filter.New(data)
+f.AddRule("name", "upper")
+f.AddRule("age", "int")
+f.AddRule("money", "float")
+f.AddRule("remember", "bool")
+f.AddRule("sub1", "strings2ints")
+f.AddRule("tags", "str2arr:;")
+f.AddRule("ids", "unique")
+f.AddRule("str1", "ltrim")
+f.AddRule("str1", "rtrim")
+f.AddRule("not-exist", "unique")
+
+f.Filtering() // apply all added rules for data.
+
+// get filtered data
+newData := f.FilteredData()
+fmt.Printf("%#v\n", newData)
+```
+
+Output:
+
+```go
+map[string]interface {}{
+    "remember":true, 
+    "sub1":[]int{1, 2}, 
+    "tags":[]string{"go", "lib"}, 
+    "ids":[]int{2, 1}, 
+    "str1":"word", 
+    "name":"INHERE", 
+    "age":50, 
+    "money":50.34
+}
 ```
 
 ## Filters & Converters

@@ -77,13 +77,13 @@ func TestFiltration_Filtering(t *testing.T) {
 	f.AddRule("sub1", "strings2ints")
 	f.AddRule("tags", "str2arr:;")
 	f.AddRule("ids", "unique")
-	f.AddRule("str1", "ltrim")
-	f.AddRule("str1", "rtrim")
+	f.AddRule("str1", "ltrim|rtrim")
 	f.AddRule("not-exist", "unique")
 
 	is.Nil(f.Filtering())
 	is.Nil(f.Filtering())
 	is.True(f.IsOK())
+
 	// get value
 	is.True(f.Bool("remember"))
 	is.False(f.Bool("not-exist"))
