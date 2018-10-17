@@ -37,6 +37,7 @@ var filterAliases = map[string]string{
 	"urlDecode":  "URLDecode",
 	"decodeUrl":  "URLDecode",
 	//
+	"str2ints":  "strToInts",
 	"str2arr":   "strToArray",
 	"str2array": "strToArray",
 	"strToArr":  "strToArray",

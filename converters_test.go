@@ -172,6 +172,17 @@ func TestCamelCase(t *testing.T) {
 	is.Equal("rangePrice", CamelCase("range*price", "*"))
 }
 
+func TestStrToInts(t *testing.T) {
+	is := assert.New(t)
+
+	_, err := StrToInts("a,b,c")
+	is.Error(err)
+
+	ints, err := StrToInts("1,2,3")
+	is.Nil(err)
+	is.Equal([]int{1, 2, 3}, ints)
+}
+
 func TestStr2Array(t *testing.T) {
 	is := assert.New(t)
 

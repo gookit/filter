@@ -83,6 +83,8 @@ func Apply(name string, val interface{}, args []string) (interface{}, error) {
 		val = EscapeJS(str)
 	case "escapeHTML":
 		val = EscapeHTML(str)
+	case "strToInts":
+		val, err = StrToInts(str, args...)
 	case "strToArray":
 		val = StrToArray(str, args...)
 	case "strToTime":

@@ -321,6 +321,21 @@ func CamelCase(s string, sep ...string) string {
  * string to slice, time
  *************************************************************/
 
+// StrToInts split string to slice and convert item to int.
+func StrToInts(s string, sep ...string) (ints []int, err error) {
+	ss := StrToSlice(s, sep...)
+	for _, item := range ss {
+		iVal, err := ToInt(item)
+		if err != nil {
+			return []int{}, err
+		}
+
+		ints = append(ints, iVal)
+	}
+
+	return
+}
+
 // StrToArray alias of the StrToSlice()
 func StrToArray(s string, sep ...string) []string {
 	return StrToSlice(s, sep...)

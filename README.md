@@ -98,7 +98,8 @@ map[string]interface {}{
 - `EscapeJS(s string) string`
 - `EscapeHTML(s string) string`
 - `Unique(val interface{}) interface{}` Will remove duplicate values, use for `[]int` `[]int64` `[]string`
-- `StrToArray(s string, sep ...string) []string`
+- `StrToSlice(s string, sep ...string) []string`
+- `StrToInts(s string, sep ...string) (ints []int, err error)`
 - `StrToTime(s string, layouts ...string) (t time.Time, err error)`
 - `StringsToInts(ss []string) (ints []int, err error)`
 
