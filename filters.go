@@ -2,7 +2,7 @@
 //
 // Source code and other details for the project are available at GitHub:
 //
-// 	https://github.com/gookit/validate
+// 	https://github.com/gookit/filter
 //
 // More usage please see README and test
 package filter
