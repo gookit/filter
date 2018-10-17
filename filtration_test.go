@@ -41,17 +41,32 @@ func TestFiltration(t *testing.T) {
 	is.Equal(nil, val)
 
 	f := New(map[string]interface{}{
-		"name":  " inhere ",
-		"email": " my@email.com ",
+		"key0":     "34",
+		"name":     " inhere ",
+		"email":    " my@email.com ",
+		"ids":      " 1,2, 3",
+		"jsCode":   "<script>var a = 23;</script>",
+		"htmlCode": "<p>some text</p>",
+		"strings":  []string{" a", " b ", "c "},
 	})
 	f.AddRules(map[string]string{
-		"email": "email",
-		"name":  "trim|ucFirst",
+		"ids":      "strToInts",
+		"key0":     "int64",
+		"email":    "email",
+		"name":     "trim|ucFirst",
+		"jsCode":   "escapeJS",
+		"htmlCode": "escapeHTML",
+		"strings":  "trimStrings",
 	})
 
 	is.Nil(f.Sanitize())
+	is.Equal(int64(34), f.SafeVal("key0"))
+	is.Equal([]int{1, 2, 3}, f.SafeVal("ids"))
+	is.Equal([]string{"a", "b", "c"}, f.SafeVal("strings"))
 	is.Equal("Inhere", f.String("name"))
 	is.Equal("my@email.com", f.String("email"))
+	is.Equal(`\x3Cscript\x3Evar a = 23;\x3C/script\x3E`, f.SafeVal("jsCode"))
+	is.Equal("&lt;p&gt;some text&lt;/p&gt;", f.SafeVal("htmlCode"))
 }
 
 func TestFiltration_Filtering(t *testing.T) {

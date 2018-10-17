@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/gookit/filter/badge.svg?branch=master)](https://coveralls.io/github/gookit/filter?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gookit/filter)](https://goreportcard.com/report/github.com/gookit/filter)
 
-package filter provide filter, sanitize, convert golang data.
+package filter provide filtering, sanitizing, and conversion of Golang data.
 
 ## GoDoc
 

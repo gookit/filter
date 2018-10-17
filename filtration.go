@@ -115,6 +115,12 @@ func (f *Filtration) Safe(key string) (interface{}, bool) {
 	return GetByPath(key, f.filteredData)
 }
 
+// SafeVal get filtered value by key
+func (f *Filtration) SafeVal(key string) interface{} {
+	val, _ := GetByPath(key, f.filteredData)
+	return val
+}
+
 // Get value by key
 func (f *Filtration) Get(key string) (interface{}, bool) {
 	val, ok := GetByPath(key, f.filteredData)
