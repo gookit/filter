@@ -1,3 +1,10 @@
+// Package filter provide data filter, sanitize, convert
+//
+// Source code and other details for the project are available at GitHub:
+//
+// 	https://github.com/gookit/validate
+//
+// More usage please see README and test
 package filter
 
 import (
