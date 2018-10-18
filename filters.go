@@ -35,6 +35,7 @@ var filterAliases = map[string]string{
 	"lcFirst":    "lowerFirst",
 	"ucFirst":    "upperFirst",
 	"ucWord":     "upperWord",
+	"distinct":   "unique",
 	"trimList":   "trimStrings",
 	"trimSpace":  "trim",
 	"uppercase":  "upper",

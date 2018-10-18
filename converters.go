@@ -367,7 +367,6 @@ func StringsToInts(ss []string) (ints []int, err error) {
 // StrToTime convert date string to time.Time
 func StrToTime(s string, layouts ...string) (t time.Time, err error) {
 	var layout string
-
 	if len(layouts) > 0 { // custom layout
 		layout = layouts[0]
 	} else { // auto match layout.
@@ -376,6 +375,11 @@ func StrToTime(s string, layouts ...string) (t time.Time, err error) {
 			layout = "20060102"
 		case 10:
 			layout = "2006-01-02"
+		case 13:
+			layout = "2006-01-02 15"
+			if strings.ContainsRune(s, 'T') {
+				layout = "2006-01-02T15"
+			}
 		case 16:
 			layout = "2006-01-02 15:04"
 			if strings.ContainsRune(s, 'T') {
@@ -386,12 +390,19 @@ func StrToTime(s string, layouts ...string) (t time.Time, err error) {
 			if strings.ContainsRune(s, 'T') {
 				layout = "2006-01-02T15:04:05"
 			}
+		case 20: // time.RFC3339
+			layout = "2006-01-02T15:04:05Z07:00"
 		}
 	}
 
 	if layout == "" {
 		err = errInvalidParam
 		return
+	}
+
+	// eg: 2006/01/02 15:04:05
+	if strings.ContainsRune(s, '/') {
+		layout = strings.Replace(layout, "-", "/", -1)
 	}
 
 	t, err = time.Parse(layout, s)

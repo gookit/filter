@@ -225,33 +225,26 @@ func TestStringsToInts(t *testing.T) {
 
 func TestStrToTime(t *testing.T) {
 	is := assert.New(t)
+	tests := map[string]string{
+		"20180927":             "2018-09-27 00:00:00 +0000 UTC",
+		"2018-09-27":           "2018-09-27 00:00:00 +0000 UTC",
+		"2018-09-27 12":        "2018-09-27 12:00:00 +0000 UTC",
+		"2018-09-27T12":        "2018-09-27 12:00:00 +0000 UTC",
+		"2018-09-27 12:34":     "2018-09-27 12:34:00 +0000 UTC",
+		"2018-09-27T12:34":     "2018-09-27 12:34:00 +0000 UTC",
+		"2018-09-27 12:34:45":  "2018-09-27 12:34:45 +0000 UTC",
+		"2018-09-27T12:34:45":  "2018-09-27 12:34:45 +0000 UTC",
+		"2018/09/27 12:34:45":  "2018-09-27 12:34:45 +0000 UTC",
+		"2018/09/27T12:34:45Z": "2018-09-27 12:34:45 +0000 UTC",
+	}
 
-	tm, err := StrToTime("20180927")
-	is.Nil(err)
-	is.Equal("2018-09-27 00:00:00 +0000 UTC", tm.String())
+	for sample, want := range tests {
+		tm, err := StrToTime(sample)
+		is.Nil(err)
+		is.Equal(want, tm.String())
+	}
 
-	tm, err = StrToTime("2018-09-27")
-	is.Nil(err)
-	is.Equal("2018-09-27 00:00:00 +0000 UTC", tm.String())
-
-	tm, err = StrToTime("2018-09-27 15:34")
-	is.Nil(err)
-	is.Equal("2018-09-27 15:34:00 +0000 UTC", tm.String())
-
-	tm, err = StrToTime("2018-09-27T15:34")
-	is.Nil(err)
-	is.Equal("2018-09-27 15:34:00 +0000 UTC", tm.String())
-
-	tm, err = StrToTime("2018-09-27 15:34:23")
-	is.Nil(err)
-	is.Equal("2018-09-27 15:34:23 +0000 UTC", tm.String())
-
-	tm, err = StrToTime("2018-09-27T15:34:23")
-	is.Nil(err)
-	is.False(tm.IsZero())
-	is.Equal("2018-09-27 15:34:23 +0000 UTC", tm.String())
-
-	tm, err = StrToTime("invalid")
+	tm, err := StrToTime("invalid")
 	is.Error(err)
 	is.True(tm.IsZero())
 
