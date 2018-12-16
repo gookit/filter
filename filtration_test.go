@@ -3,6 +3,7 @@ package filter
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"strings"
 	"testing"
 )
 
@@ -74,6 +75,7 @@ func TestFiltration(t *testing.T) {
 	})
 
 	is.Nil(f.Sanitize())
+	is.NotEmpty(f.CleanData())
 	is.Equal(int64(34), f.SafeVal("key0"))
 	is.Equal([]int{1, 2, 3}, f.SafeVal("ids"))
 	is.Equal([]string{"a", "b", "c"}, f.SafeVal("strings"))
@@ -81,6 +83,66 @@ func TestFiltration(t *testing.T) {
 	is.Equal("my@email.com", f.String("email"))
 	is.Equal(`\x3Cscript\x3Evar a = 23;\x3C/script\x3E`, f.SafeVal("jsCode"))
 	is.Equal("&lt;p&gt;some text&lt;/p&gt;", f.SafeVal("htmlCode"))
+
+	// clear all
+	f.Clear()
+	is.Empty(f.CleanData())
+}
+
+func TestFiltration_AddRule(t *testing.T) {
+	is := assert.New(t)
+
+	f := New(nil)
+	f.LoadData(map[string]interface{}{
+		"name": " INHERE ",
+		"age":  "50 ",
+	})
+
+	is.Panics(func() {
+		f.AddRule("", nil)
+	})
+	is.Panics(func() {
+		f.AddRule("name", "")
+	})
+	is.Panics(func() {
+		f.AddRule("name", []int{1})
+	})
+
+	f.AddRule("name", func(v interface{}) (interface{}, error) {
+		return strings.TrimSpace(v.(string)), nil
+	})
+
+	is.NoError(f.Filtering())
+	is.Equal("INHERE", f.String("name"))
+
+	is.Len(f.CleanData(), 1)
+	is.Contains(f.CleanData(), "name")
+
+	// clear rules and cleanData
+	f.ResetRules()
+	is.Empty(f.CleanData())
+	is.NotEmpty(f.RawData())
+
+	f.AddRule("name", "trim|lower")
+	is.NoError(f.Filtering())
+	is.Equal("inhere", f.String("name"))
+
+	// clear all data
+	is.NotEmpty(f.CleanData())
+	f.ResetData(true)
+	is.Empty(f.RawData())
+	is.Empty(f.CleanData())
+	f.LoadData(map[string]interface{}{
+		"name": " Inhere0 ",
+	})
+	is.NoError(f.Filtering())
+	is.Equal("inhere0", f.String("name"))
+	is.Equal("", f.String("not-exist"))
+
+	f.ResetRules()
+	f.AddRule("not-exist", "trim").SetDefaultVal(" def val ")
+	is.NoError(f.Filtering())
+	is.Equal("def val", f.String("not-exist"))
 }
 
 func TestFiltration_Filtering(t *testing.T) {
@@ -127,7 +189,7 @@ func TestFiltration_Filtering(t *testing.T) {
 	is.Equal([]int{1, 2}, f.MustGet("sub1"))
 	is.Len(f.MustGet("ids"), 2)
 	is.Equal([]string{"go", "lib"}, f.MustGet("tags"))
-	is.Equal("INHERE", f.FilteredData()["name"])
+	is.Equal("INHERE", f.CleanData()["name"])
 	is.Equal("word", f.String("str1"))
 	is.Equal("hello", f.String("str2"))
 

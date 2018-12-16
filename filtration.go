@@ -13,10 +13,10 @@ type Filtration struct {
 	data map[string]interface{}
 	// mark has apply filters
 	filtered bool
+	// filtered and clean data
+	cleanData map[string]interface{}
 	// filter rules
 	filterRules []*Rule
-	// filtered data
-	filteredData map[string]interface{}
 }
 
 // New a Filtration
@@ -24,8 +24,44 @@ func New(data map[string]interface{}) *Filtration {
 	return &Filtration{
 		data: data,
 		// init map
-		filteredData: make(map[string]interface{}),
+		cleanData: make(map[string]interface{}),
 	}
+}
+
+// LoadData set raw data for filtering.
+func (f *Filtration) LoadData(data map[string]interface{}) {
+	f.data = data
+}
+
+// ResetData reset raw and filtered data
+func (f *Filtration) ResetData(resetRaw bool) {
+	f.err = nil
+	f.filtered = false
+
+	// reset data.
+	if resetRaw {
+		f.data = make(map[string]interface{})
+	}
+
+	f.cleanData = make(map[string]interface{})
+}
+
+// ResetRules reset rules and filtered data
+func (f *Filtration) ResetRules() {
+	f.err = nil
+	f.filtered = false
+
+	// clear rules
+	f.filterRules = f.filterRules[0:0]
+
+	// clear cleanData
+	f.cleanData = make(map[string]interface{})
+}
+
+// Clear all data and rules
+func (f *Filtration) Clear() {
+	f.data = make(map[string]interface{})
+	f.ResetRules()
 }
 
 /*************************************************************
@@ -37,19 +73,30 @@ func New(data map[string]interface{}) *Filtration {
 // 	f.AddRule("name", "trim")
 // 	f.AddRule("age", "int")
 // 	f.AddRule("age", "trim|int")
-func (f *Filtration) AddRule(field string, rule string) *Rule {
-	rule = strings.TrimSpace(rule)
-	rules := stringSplit(strings.Trim(rule, "|:"), "|")
+func (f *Filtration) AddRule(field string, rule interface{}) *Rule {
 	fields := stringSplit(field, ",")
-
-	if len(fields) == 0 && len(rules) == 0 {
-		panic("filter: invalid fields and rule params")
+	if len(fields) == 0 {
+		panic("filter: invalid fields parameters, cannot be empty")
 	}
 
 	r := newRule(fields)
-	r.AddFilters(rules...)
-	f.filterRules = append(f.filterRules, r)
 
+	if strRule, ok := rule.(string); ok {
+		strRule = strings.TrimSpace(strRule)
+		rules := stringSplit(strings.Trim(strRule, "|:"), "|")
+
+		if len(rules) == 0 {
+			panic("filter: invalid 'rule' params, cannot be empty")
+		}
+
+		r.AddFilters(rules...)
+	} else if fn, ok := rule.(func(interface{}) (interface{}, error)); ok {
+		r.SetFilterFunc(fn)
+	} else {
+		panic("filter: 'rule' params cannot be empty and type allow: string, func")
+	}
+
+	f.filterRules = append(f.filterRules, r)
 	return r
 }
 
@@ -106,18 +153,18 @@ func (f *Filtration) Raw(key string) (interface{}, bool) {
 
 // Safe get filtered value by key
 func (f *Filtration) Safe(key string) (interface{}, bool) {
-	return GetByPath(key, f.filteredData)
+	return GetByPath(key, f.cleanData)
 }
 
 // SafeVal get filtered value by key
 func (f *Filtration) SafeVal(key string) interface{} {
-	val, _ := GetByPath(key, f.filteredData)
+	val, _ := GetByPath(key, f.cleanData)
 	return val
 }
 
 // Get value by key
 func (f *Filtration) Get(key string) (interface{}, bool) {
-	val, ok := GetByPath(key, f.filteredData)
+	val, ok := GetByPath(key, f.cleanData)
 	if !ok {
 		val, ok = GetByPath(key, f.data)
 	}
@@ -173,19 +220,24 @@ func (f *Filtration) String(key string) string {
 	return fmt.Sprint(val)
 }
 
-// FilteredData get filtered data
-func (f *Filtration) FilteredData() map[string]interface{} {
-	return f.filteredData
-}
-
 // BindStruct bind the filtered data to struct.
 func (f *Filtration) BindStruct(ptr interface{}) error {
-	bts, err := json.Marshal(f.filteredData)
+	bts, err := json.Marshal(f.cleanData)
 	if err != nil {
 		return err
 	}
 
 	return json.Unmarshal(bts, ptr)
+}
+
+// RawData get raw data
+func (f *Filtration) RawData() map[string]interface{} {
+	return f.data
+}
+
+// CleanData get filtered data
+func (f *Filtration) CleanData() map[string]interface{} {
+	return f.cleanData
 }
 
 /*************************************************************
@@ -200,6 +252,10 @@ type Rule struct {
 	filters []string
 	// filter args. { index: "args" }
 	filterArgs map[int]string
+	// user custom filter func
+	filterFunc func(val interface{}) (interface{}, error)
+	// default value for the rule
+	defaultVal interface{}
 }
 
 func newRule(fields []string) *Rule {
@@ -210,7 +266,19 @@ func newRule(fields []string) *Rule {
 	}
 }
 
-// AddFilters add filter(s).
+// SetDefaultVal set default value for the rule
+func (r *Rule) SetDefaultVal(defaultVal interface{}) *Rule {
+	r.defaultVal = defaultVal
+	return r
+}
+
+// SetFilterFunc user custom filter func
+func (r *Rule) SetFilterFunc(fn func(val interface{}) (interface{}, error)) *Rule {
+	r.filterFunc = fn
+	return r
+}
+
+// AddFilters add multi filter(s).
 // Usage:
 // 	r.AddFilters("int", "str2arr:,")
 func (r *Rule) AddFilters(filters ...string) *Rule {
@@ -236,10 +304,27 @@ func (r *Rule) Apply(f *Filtration) (err error) {
 		// get field value.
 		val, has := f.Get(field)
 		if !has { // no field
+			if r.defaultVal == nil {
+				continue
+			}
+
+			// has default value
+			val = r.defaultVal
+		}
+
+		// custom filter func
+		if r.filterFunc != nil {
+			val, err = r.filterFunc(val)
+			if err != nil {
+				return err
+			}
+
+			// save filtered value.
+			f.cleanData[field] = val
 			continue
 		}
 
-		// call filters
+		// call built-in filters
 		for i, name := range r.filters {
 			args := parseArgString(r.filterArgs[i])
 			val, err = Apply(name, val, args)
@@ -249,7 +334,7 @@ func (r *Rule) Apply(f *Filtration) (err error) {
 		}
 
 		// save filtered value.
-		f.filteredData[field] = val
+		f.cleanData[field] = val
 	}
 
 	return
