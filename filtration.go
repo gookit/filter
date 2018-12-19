@@ -52,7 +52,7 @@ func (f *Filtration) ResetRules() {
 	f.filtered = false
 
 	// clear rules
-	f.filterRules = f.filterRules[0:0]
+	f.filterRules = f.filterRules[:0]
 
 	// clear cleanData
 	f.cleanData = make(map[string]interface{})
