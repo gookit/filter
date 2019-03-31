@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// some alias methods.
+// Some alias methods.
 var (
 	Lower = strings.ToLower
 	Upper = strings.ToUpper
@@ -243,7 +243,6 @@ func UpperWord(s string) string {
 	for i, word := range ss {
 		ns[i] = UpperFirst(word)
 	}
-
 	return strings.Join(ns, " ")
 }
 
@@ -257,7 +256,6 @@ func LowerFirst(s string) string {
 	if f >= 'A' && f <= 'Z' {
 		return strings.ToLower(string(f)) + string(s[1:])
 	}
-
 	return s
 }
 
@@ -271,8 +269,12 @@ func UpperFirst(s string) string {
 	if f >= 'a' && f <= 'z' {
 		return strings.ToUpper(string(f)) + string(s[1:])
 	}
-
 	return s
+}
+
+// Snake alias of the SnakeCase
+func Snake(s string, sep ...string) string {
+	return SnakeCase(s, sep...)
 }
 
 // SnakeCase convert. eg "RangePrice" -> "range_price"
@@ -289,7 +291,12 @@ func SnakeCase(s string, sep ...string) string {
 	return strings.TrimLeft(newStr, sepChar)
 }
 
-// CamelCase convert.
+// Camel alias of the CamelCase
+func Camel(s string, sep ...string) string {
+	return CamelCase(s, sep...)
+}
+
+// CamelCase convert string to camel case.
 // Support:
 // 	"range_price" -> "rangePrice"
 // 	"range price" -> "rangePrice"

@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/gookit/filter/badge.svg?branch=master)](https://coveralls.io/github/gookit/filter?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gookit/filter)](https://goreportcard.com/report/github.com/gookit/filter)
 
-package filter provide filtering, sanitizing, and conversion of Golang data.
+Package filter provide filtering, sanitizing, and conversion of Golang data.
 
 ## GoDoc
 
@@ -89,13 +89,13 @@ map[string]interface {}{
 - `TrimRight(s string, cutSet ...string) string`
 - `TrimStrings(ss []string, cutSet ...string) (ns []string)`
 - `Substr(s string, pos, length int) string`
-- `Lowercase(s string) string`
-- `Uppercase(s string) string`
+- `Lower/Lowercase(s string) string`
+- `Upper/Uppercase(s string) string`
 - `LowerFirst(s string) string`
 - `UpperFirst(s string) string`
 - `UpperWord(s string) string`
-- `CamelCase(s string, sep ...string) string`
-- `SnakeCase(s string, sep ...string) string`
+- `Camel/CamelCase(s string, sep ...string) string`
+- `Snake/SnakeCase(s string, sep ...string) string`
 - `Email(s string) string`
 - `URLDecode(s string) string`
 - `URLEncode(s string) string`

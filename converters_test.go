@@ -149,7 +149,7 @@ func TestSnakeCase(t *testing.T) {
 		is.Equal(want, SnakeCase(sample))
 	}
 
-	is.Equal("range-price", SnakeCase("rangePrice", "-"))
+	is.Equal("range-price", Snake("rangePrice", "-"))
 	is.Equal("range price", SnakeCase("rangePrice", " "))
 }
 
@@ -165,7 +165,7 @@ func TestCamelCase(t *testing.T) {
 		is.Equal(want, CamelCase(sample))
 	}
 
-	is.Equal("rangePrice", CamelCase("range-price", "-"))
+	is.Equal("rangePrice", Camel("range-price", "-"))
 	is.Equal("rangePrice", CamelCase("range price", " "))
 
 	// custom sep char
