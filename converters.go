@@ -20,7 +20,7 @@ var (
 	EscapeHTML = template.HTMLEscapeString
 )
 
-// some regex for convert string.
+// Some regex for convert string.
 var (
 	toSnakeReg  = regexp.MustCompile("[A-Z][a-z]")
 	toCamelRegs = map[string]*regexp.Regexp{
@@ -300,12 +300,12 @@ func CamelCase(s string, sep ...string) string {
 		sepChar = sep[0]
 	}
 
-	// not contains sep char
+	// Not contains sep char
 	if !strings.Contains(s, sepChar) {
 		return s
 	}
 
-	// get regexp instance
+	// Get regexp instance
 	rgx, ok := toCamelRegs[sepChar]
 	if !ok {
 		rgx = regexp.MustCompile(regexp.QuoteMeta(sepChar) + "+[a-zA-Z]")
@@ -377,19 +377,10 @@ func StrToTime(s string, layouts ...string) (t time.Time, err error) {
 			layout = "2006-01-02"
 		case 13:
 			layout = "2006-01-02 15"
-			if strings.ContainsRune(s, 'T') {
-				layout = "2006-01-02T15"
-			}
 		case 16:
 			layout = "2006-01-02 15:04"
-			if strings.ContainsRune(s, 'T') {
-				layout = "2006-01-02T15:04"
-			}
 		case 19:
 			layout = "2006-01-02 15:04:05"
-			if strings.ContainsRune(s, 'T') {
-				layout = "2006-01-02T15:04:05"
-			}
 		case 20: // time.RFC3339
 			layout = "2006-01-02T15:04:05Z07:00"
 		}
@@ -398,6 +389,11 @@ func StrToTime(s string, layouts ...string) (t time.Time, err error) {
 	if layout == "" {
 		err = errInvalidParam
 		return
+	}
+
+	// has 'T' eg.2006-01-02T15:04:05
+	if strings.ContainsRune(s, 'T') {
+		layout = strings.Replace(layout, " ", "T", -1)
 	}
 
 	// eg: 2006/01/02 15:04:05

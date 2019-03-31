@@ -142,6 +142,11 @@ func (f *Filtration) IsOK() bool {
 	return f.err == nil
 }
 
+// Err get error
+func (f *Filtration) Err() error {
+	return f.err
+}
+
 /*************************************************************
  * get raw/filtered data value
  *************************************************************/

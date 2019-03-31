@@ -2,9 +2,10 @@ package filter
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFiltration(t *testing.T) {
@@ -143,6 +144,20 @@ func TestFiltration_AddRule(t *testing.T) {
 	f.AddRule("not-exist", "trim").SetDefaultVal(" def val ")
 	is.NoError(f.Filtering())
 	is.Equal("def val", f.String("not-exist"))
+
+	// trimStrings error
+	f = New(map[string]interface{}{
+		"ints": []int{1, 2, 3},
+	})
+	f.AddRule("ints", "trimStrings")
+	is.Error(f.Filtering())
+	is.Equal("invalid input parameter", f.Err().Error())
+
+	// stringsToInts error
+	f.ResetRules()
+	f.AddRule("ints", "stringsToInts")
+	is.Error(f.Filtering())
+	is.Equal("invalid input parameter", f.Err().Error())
 }
 
 func TestFiltration_Filtering(t *testing.T) {

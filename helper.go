@@ -34,7 +34,6 @@ func Apply(name string, val interface{}, args []string) (interface{}, error) {
 				err = errInvalidParam
 			}
 		}
-
 		return val, err
 	}
 

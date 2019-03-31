@@ -108,7 +108,6 @@ func TrimStrings(ss []string, cutSet ...string) (ns []string) {
 			ns = append(ns, strings.TrimSpace(str))
 		}
 	}
-
 	return
 }
 
@@ -125,7 +124,6 @@ func URLEncode(s string) string {
 func URLDecode(s string) string {
 	if pos := strings.IndexRune(s, '?'); pos > -1 { // un-escape query data
 		qy, err := url.QueryUnescape(s[pos+1:])
-
 		if err == nil {
 			return s[0:pos+1] + qy
 		}
