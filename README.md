@@ -16,7 +16,7 @@ Package filter provide filtering, sanitizing, and conversion of Golang data.
 
 ```go
 intVal, err := filter.Int("20") // int(20)
-stirngs := filter.Str2Slice("a,b, c", ",") // []string{"a", "b", "c"}
+strings := filter.Str2Slice("a,b, c", ",") // []string{"a", "b", "c"}
 ```
 
 ## Filtration
