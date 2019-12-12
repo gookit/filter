@@ -15,7 +15,7 @@ func TestValToInt(t *testing.T) {
 		2,
 		int8(2), int16(2), int32(2), int64(2),
 		uint(2), uint8(2), uint16(2), uint32(2), uint64(2),
-		float32(2.2), float64(2.3),
+		float32(2.2), 2.3,
 		"2",
 	}
 
@@ -64,6 +64,38 @@ func TestValToInt(t *testing.T) {
 	for _, in := range tests {
 		is.Equal(int64(2), MustInt64(in))
 	}
+}
+
+func TestValToStr(t *testing.T) {
+	is := assert.New(t)
+
+	tests := []interface{}{
+		2,
+		int8(2), int16(2), int32(2), int64(2),
+		uint(2), uint8(2), uint16(2), uint32(2), uint64(2),
+		"2",
+	}
+	for _, in := range tests {
+		is.Equal("2", MustString(in))
+	}
+
+	tests1 := []interface{}{
+		float32(2.3), 2.3,
+	}
+	for _, in := range tests1 {
+		is.Equal("2.3", MustString(in))
+	}
+
+	str, err := String(2.3)
+	is.NoError(err)
+	is.Equal("2.3", str)
+
+	str, err = String(nil)
+	is.NoError(err)
+	is.Equal("", str)
+
+	_, err = String([]string{"a"})
+	is.Error(err)
 }
 
 func TestStrToFloat(t *testing.T) {

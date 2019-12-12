@@ -15,12 +15,18 @@ Package filter provide filtering, sanitizing, and conversion of Golang data.
 
 ## Func Usage
 
+Quick usage:
+
 ```go
+str := filter.MustString(23) // "23"
+
 intVal, err := filter.Int("20") // int(20)
 strings := filter.Str2Slice("a,b, c", ",") // []string{"a", "b", "c"}
 ```
 
 ## Filtration
+
+Filtering data:
 
 ```go
 data := map[string]interface{}{
@@ -80,11 +86,13 @@ map[string]interface {}{
 - `ToInt/Int(s string) (int, error)`
 - `ToUint/Uint(s string) (uint64, error)`
 - `ToInt64/Int64(s string) (int64, error)`
+- `ToString/String(v interface{}) (string, error)`
 - `MustBool(s string) bool`
 - `MustFloat(s string) float64`
 - `MustInt(s string) int`
 - `MustInt64(s string) int64`
 - `MustUint(s string) uint64`
+- `MustString(v interface{}) string`
 - `Trim(s string, cutSet ...string) string`
 - `TrimLeft(s string, cutSet ...string) string`
 - `TrimRight(s string, cutSet ...string) string`

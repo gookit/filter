@@ -167,7 +167,6 @@ func ToInt64(in interface{}) (i64 int64, err error) {
 	default:
 		err = errConvertFail
 	}
-
 	return
 }
 
@@ -218,6 +217,54 @@ func MustBool(s string) bool {
 	return val
 }
 
+// String convert val to string
+func String(val interface{}) (string, error) {
+	return ToString(val)
+}
+
+// MustString convert value to string
+func MustString(in interface{}) string {
+	val, _ := ToString(in)
+	return val
+}
+
+// ToString convert value to string
+func ToString(val interface{}) (str string, err error) {
+	switch tVal := val.(type) {
+	case int:
+		str = strconv.Itoa(tVal)
+	case int8:
+		str = strconv.Itoa(int(tVal))
+	case int16:
+		str = strconv.Itoa(int(tVal))
+	case int32:
+		str = strconv.Itoa(int(tVal))
+	case int64:
+		str = strconv.Itoa(int(tVal))
+	case uint:
+		str = strconv.Itoa(int(tVal))
+	case uint8:
+		str = strconv.Itoa(int(tVal))
+	case uint16:
+		str = strconv.Itoa(int(tVal))
+	case uint32:
+		str = strconv.Itoa(int(tVal))
+	case uint64:
+		str = strconv.Itoa(int(tVal))
+	case float32:
+		str = fmt.Sprint(tVal)
+	case float64:
+		str = fmt.Sprint(tVal)
+	case string:
+		str = tVal
+	case nil:
+		str = ""
+	default:
+		err = errConvertFail
+	}
+	return
+}
+
 /*************************************************************
  * change string case
  *************************************************************/
@@ -254,7 +301,7 @@ func LowerFirst(s string) string {
 
 	f := s[0]
 	if f >= 'A' && f <= 'Z' {
-		return strings.ToLower(string(f)) + string(s[1:])
+		return strings.ToLower(string(f)) + s[1:]
 	}
 	return s
 }
@@ -267,7 +314,7 @@ func UpperFirst(s string) string {
 
 	f := s[0]
 	if f >= 'a' && f <= 'z' {
-		return strings.ToUpper(string(f)) + string(s[1:])
+		return strings.ToUpper(string(f)) + s[1:]
 	}
 	return s
 }
