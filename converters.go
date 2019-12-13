@@ -2,12 +2,14 @@ package filter
 
 import (
 	"errors"
-	"fmt"
-	"regexp"
 	"strconv"
 	"strings"
 	"text/template"
 	"time"
+
+	"github.com/gookit/goutil/fmtutil"
+	"github.com/gookit/goutil/mathutil"
+	"github.com/gookit/goutil/strutil"
 )
 
 // Some alias methods.
@@ -15,25 +17,17 @@ var (
 	Lower = strings.ToLower
 	Upper = strings.ToUpper
 	Title = strings.ToTitle
-	// escape string.
-	EscapeJS   = template.JSEscapeString
-	EscapeHTML = template.HTMLEscapeString
-)
 
-// Some regex for convert string.
-var (
-	toSnakeReg  = regexp.MustCompile("[A-Z][a-z]")
-	toCamelRegs = map[string]*regexp.Regexp{
-		" ": regexp.MustCompile(" +[a-zA-Z]"),
-		"-": regexp.MustCompile("-+[a-zA-Z]"),
-		"_": regexp.MustCompile("_+[a-zA-Z]"),
-	}
-	errConvertFail  = errors.New("convert data is failure")
+	// EscapeJS escape javascript string
+	EscapeJS   = template.JSEscapeString
+	// EscapeHTML escape html string
+	EscapeHTML = template.HTMLEscapeString
+	// error for params
 	errInvalidParam = errors.New("invalid input parameter")
 )
 
 /*************************************************************
- * string to int,bool,float
+ * value to int,bool,float,string
  *************************************************************/
 
 // Int convert string to int
@@ -48,39 +42,8 @@ func MustInt(in interface{}) int {
 }
 
 // ToInt convert string to int
-func ToInt(in interface{}) (iVal int, err error) {
-	switch tVal := in.(type) {
-	case int:
-		iVal = tVal
-	case int8:
-		iVal = int(tVal)
-	case int16:
-		iVal = int(tVal)
-	case int32:
-		iVal = int(tVal)
-	case int64:
-		iVal = int(tVal)
-	case uint:
-		iVal = int(tVal)
-	case uint8:
-		iVal = int(tVal)
-	case uint16:
-		iVal = int(tVal)
-	case uint32:
-		iVal = int(tVal)
-	case uint64:
-		iVal = int(tVal)
-	case float32:
-		iVal = int(tVal)
-	case float64:
-		iVal = int(tVal)
-	case string:
-		iVal, err = strconv.Atoi(Trim(tVal))
-	default:
-		err = errConvertFail
-	}
-
-	return
+func ToInt(in interface{}) (int, error) {
+	return mathutil.ToInt(in)
 }
 
 // Uint convert string to uint
@@ -95,82 +58,21 @@ func MustUint(in interface{}) uint64 {
 }
 
 // ToUint convert string to uint
-func ToUint(in interface{}) (u64 uint64, err error) {
-	switch tVal := in.(type) {
-	case int:
-		u64 = uint64(tVal)
-	case int8:
-		u64 = uint64(tVal)
-	case int16:
-		u64 = uint64(tVal)
-	case int32:
-		u64 = uint64(tVal)
-	case int64:
-		u64 = uint64(tVal)
-	case uint:
-		u64 = uint64(tVal)
-	case uint8:
-		u64 = uint64(tVal)
-	case uint16:
-		u64 = uint64(tVal)
-	case uint32:
-		u64 = uint64(tVal)
-	case uint64:
-		u64 = tVal
-	case float32:
-		u64 = uint64(tVal)
-	case float64:
-		u64 = uint64(tVal)
-	case string:
-		u64, err = strconv.ParseUint(Trim(tVal), 10, 0)
-	default:
-		err = errConvertFail
-	}
-
-	return
+func ToUint(in interface{}) ( uint64, error) {
+	return mathutil.ToUint(in)
 }
 
-// Int64 convert string to int64
+// Int64 convert value to int64
 func Int64(in interface{}) (int64, error) {
 	return ToInt64(in)
 }
 
-// ToInt64 convert string to int64
-func ToInt64(in interface{}) (i64 int64, err error) {
-	switch tVal := in.(type) {
-	case string:
-		i64, err = strconv.ParseInt(Trim(tVal), 10, 0)
-	case int:
-		i64 = int64(tVal)
-	case int8:
-		i64 = int64(tVal)
-	case int16:
-		i64 = int64(tVal)
-	case int32:
-		i64 = int64(tVal)
-	case int64:
-		i64 = tVal
-	case uint:
-		i64 = int64(tVal)
-	case uint8:
-		i64 = int64(tVal)
-	case uint16:
-		i64 = int64(tVal)
-	case uint32:
-		i64 = int64(tVal)
-	case uint64:
-		i64 = int64(tVal)
-	case float32:
-		i64 = int64(tVal)
-	case float64:
-		i64 = int64(tVal)
-	default:
-		err = errConvertFail
-	}
-	return
+// ToInt64 convert value to int64
+func ToInt64(val interface{}) (int64, error) {
+	return mathutil.ToInt64(val)
 }
 
-// MustInt64 convert
+// MustInt64 convert value to int64
 func MustInt64(in interface{}) int64 {
 	i64, _ := ToInt64(in)
 	return i64
@@ -200,15 +102,7 @@ func ToBool(s string) (bool, error) {
 // Bool parse string to bool
 func Bool(s string) (bool, error) {
 	// return strconv.ParseBool(Trim(s))
-	lower := strings.ToLower(s)
-	switch lower {
-	case "1", "on", "yes", "true":
-		return true, nil
-	case "0", "off", "no", "false":
-		return false, nil
-	}
-
-	return false, fmt.Errorf("'%s' cannot convert to bool", s)
+	return strutil.ToBool(s)
 }
 
 // MustBool convert.
@@ -229,40 +123,8 @@ func MustString(in interface{}) string {
 }
 
 // ToString convert value to string
-func ToString(val interface{}) (str string, err error) {
-	switch tVal := val.(type) {
-	case int:
-		str = strconv.Itoa(tVal)
-	case int8:
-		str = strconv.Itoa(int(tVal))
-	case int16:
-		str = strconv.Itoa(int(tVal))
-	case int32:
-		str = strconv.Itoa(int(tVal))
-	case int64:
-		str = strconv.Itoa(int(tVal))
-	case uint:
-		str = strconv.Itoa(int(tVal))
-	case uint8:
-		str = strconv.Itoa(int(tVal))
-	case uint16:
-		str = strconv.Itoa(int(tVal))
-	case uint32:
-		str = strconv.Itoa(int(tVal))
-	case uint64:
-		str = strconv.Itoa(int(tVal))
-	case float32:
-		str = fmt.Sprint(tVal)
-	case float64:
-		str = fmt.Sprint(tVal)
-	case string:
-		str = tVal
-	case nil:
-		str = ""
-	default:
-		err = errConvertFail
-	}
-	return
+func ToString(val interface{}) (string, error) {
+	return strutil.ToString(val)
 }
 
 /*************************************************************
@@ -281,42 +143,17 @@ func Uppercase(s string) string {
 
 // UpperWord Change the first character of each word to uppercase
 func UpperWord(s string) string {
-	if len(s) == 0 {
-		return s
-	}
-
-	ss := strings.Split(s, " ")
-	ns := make([]string, len(ss))
-	for i, word := range ss {
-		ns[i] = UpperFirst(word)
-	}
-	return strings.Join(ns, " ")
+	return strutil.UpperWord(s)
 }
 
 // LowerFirst lower first char
 func LowerFirst(s string) string {
-	if len(s) == 0 {
-		return s
-	}
-
-	f := s[0]
-	if f >= 'A' && f <= 'Z' {
-		return strings.ToLower(string(f)) + s[1:]
-	}
-	return s
+	return strutil.LowerFirst(s)
 }
 
 // UpperFirst upper first char
 func UpperFirst(s string) string {
-	if len(s) == 0 {
-		return s
-	}
-
-	f := s[0]
-	if f >= 'a' && f <= 'z' {
-		return strings.ToUpper(string(f)) + s[1:]
-	}
-	return s
+	return strutil.UpperFirst(s)
 }
 
 // Snake alias of the SnakeCase
@@ -326,21 +163,12 @@ func Snake(s string, sep ...string) string {
 
 // SnakeCase convert. eg "RangePrice" -> "range_price"
 func SnakeCase(s string, sep ...string) string {
-	sepChar := "_"
-	if len(sep) > 0 {
-		sepChar = sep[0]
-	}
-
-	newStr := toSnakeReg.ReplaceAllStringFunc(s, func(s string) string {
-		return sepChar + LowerFirst(s)
-	})
-
-	return strings.TrimLeft(newStr, sepChar)
+	return strutil.SnakeCase(s, sep...)
 }
 
 // Camel alias of the CamelCase
 func Camel(s string, sep ...string) string {
-	return CamelCase(s, sep...)
+	return strutil.CamelCase(s, sep...)
 }
 
 // CamelCase convert string to camel case.
@@ -349,26 +177,7 @@ func Camel(s string, sep ...string) string {
 // 	"range price" -> "rangePrice"
 // 	"range-price" -> "rangePrice"
 func CamelCase(s string, sep ...string) string {
-	sepChar := "_"
-	if len(sep) > 0 {
-		sepChar = sep[0]
-	}
-
-	// Not contains sep char
-	if !strings.Contains(s, sepChar) {
-		return s
-	}
-
-	// Get regexp instance
-	rgx, ok := toCamelRegs[sepChar]
-	if !ok {
-		rgx = regexp.MustCompile(regexp.QuoteMeta(sepChar) + "+[a-zA-Z]")
-	}
-
-	return rgx.ReplaceAllStringFunc(s, func(s string) string {
-		s = strings.TrimLeft(s, sepChar)
-		return UpperFirst(s)
-	})
+	return strutil.CamelCase(s, sep...)
 }
 
 /*************************************************************
@@ -376,18 +185,8 @@ func CamelCase(s string, sep ...string) string {
  *************************************************************/
 
 // StrToInts split string to slice and convert item to int.
-func StrToInts(s string, sep ...string) (ints []int, err error) {
-	ss := StrToSlice(s, sep...)
-	for _, item := range ss {
-		iVal, err := ToInt(item)
-		if err != nil {
-			return []int{}, err
-		}
-
-		ints = append(ints, iVal)
-	}
-
-	return
+func StrToInts(s string, sep ...string) ([]int, error) {
+	return strutil.ToIntSlice(s, sep...)
 }
 
 // StrToArray alias of the StrToSlice()
@@ -398,64 +197,18 @@ func StrToArray(s string, sep ...string) []string {
 // StrToSlice split string to array.
 func StrToSlice(s string, sep ...string) []string {
 	if len(sep) > 0 {
-		return stringSplit(s, sep[0])
+		return strutil.Split(s, sep[0])
 	}
 
-	return stringSplit(s, ",")
+	return strutil.Split(s, ",")
 }
 
 // StringsToInts string slice to int slice
-func StringsToInts(ss []string) (ints []int, err error) {
-	for _, str := range ss {
-		iVal, err := strconv.Atoi(str)
-		if err != nil {
-			return []int{}, err
-		}
-
-		ints = append(ints, iVal)
-	}
-
-	return
+func StringsToInts(ss []string) ([]int, error) {
+	return fmtutil.StringsToInts(ss)
 }
 
 // StrToTime convert date string to time.Time
-func StrToTime(s string, layouts ...string) (t time.Time, err error) {
-	var layout string
-	if len(layouts) > 0 { // custom layout
-		layout = layouts[0]
-	} else { // auto match layout.
-		switch len(s) {
-		case 8:
-			layout = "20060102"
-		case 10:
-			layout = "2006-01-02"
-		case 13:
-			layout = "2006-01-02 15"
-		case 16:
-			layout = "2006-01-02 15:04"
-		case 19:
-			layout = "2006-01-02 15:04:05"
-		case 20: // time.RFC3339
-			layout = "2006-01-02T15:04:05Z07:00"
-		}
-	}
-
-	if layout == "" {
-		err = errInvalidParam
-		return
-	}
-
-	// has 'T' eg.2006-01-02T15:04:05
-	if strings.ContainsRune(s, 'T') {
-		layout = strings.Replace(layout, " ", "T", -1)
-	}
-
-	// eg: 2006/01/02 15:04:05
-	if strings.ContainsRune(s, '/') {
-		layout = strings.Replace(layout, "-", "/", -1)
-	}
-
-	t, err = time.Parse(layout, s)
-	// t, err = time.ParseInLocation(layout, s, time.Local)
-	return
+func StrToTime(s string, layouts ...string) (time.Time, error) {
+	return strutil.ToTime(s, layouts...)
 }

@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+
+	"github.com/gookit/goutil/maputil"
+	"github.com/gookit/goutil/strutil"
 )
 
 // Filtration definition. Sanitization Sanitizing Sanitize
@@ -74,7 +77,7 @@ func (f *Filtration) Clear() {
 // 	f.AddRule("age", "int")
 // 	f.AddRule("age", "trim|int")
 func (f *Filtration) AddRule(field string, rule interface{}) *Rule {
-	fields := stringSplit(field, ",")
+	fields := strutil.Split(field, ",")
 	if len(fields) == 0 {
 		panic("filter: invalid fields parameters, cannot be empty")
 	}
@@ -83,7 +86,7 @@ func (f *Filtration) AddRule(field string, rule interface{}) *Rule {
 
 	if strRule, ok := rule.(string); ok {
 		strRule = strings.TrimSpace(strRule)
-		rules := stringSplit(strings.Trim(strRule, "|:"), "|")
+		rules := strutil.Split(strings.Trim(strRule, "|:"), "|")
 
 		if len(rules) == 0 {
 			panic("filter: invalid 'rule' params, cannot be empty")
@@ -153,25 +156,25 @@ func (f *Filtration) Err() error {
 
 // Raw get raw value by key
 func (f *Filtration) Raw(key string) (interface{}, bool) {
-	return GetByPath(key, f.data)
+	return maputil.GetByPath(key, f.data)
 }
 
 // Safe get filtered value by key
 func (f *Filtration) Safe(key string) (interface{}, bool) {
-	return GetByPath(key, f.cleanData)
+	return maputil.GetByPath(key, f.cleanData)
 }
 
 // SafeVal get filtered value by key
 func (f *Filtration) SafeVal(key string) interface{} {
-	val, _ := GetByPath(key, f.cleanData)
+	val, _ := maputil.GetByPath(key, f.cleanData)
 	return val
 }
 
 // Get value by key
 func (f *Filtration) Get(key string) (interface{}, bool) {
-	val, ok := GetByPath(key, f.cleanData)
+	val, ok := maputil.GetByPath(key, f.cleanData)
 	if !ok {
-		val, ok = GetByPath(key, f.data)
+		val, ok = maputil.GetByPath(key, f.data)
 	}
 
 	return val, ok

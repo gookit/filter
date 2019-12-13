@@ -2,7 +2,11 @@ package filter
 
 import (
 	"fmt"
-	"strings"
+
+	"github.com/gookit/goutil/arrutil"
+	"github.com/gookit/goutil/maputil"
+	"github.com/gookit/goutil/mathutil"
+	"github.com/gookit/goutil/strutil"
 )
 
 // Apply a filter by name. for filter value.
@@ -14,22 +18,22 @@ func Apply(name string, val interface{}, args []string) (interface{}, error) {
 	if _, ok := dontLimitType[realName]; ok {
 		switch realName {
 		case "int":
-			val, err = ToInt(val)
+			val, err = mathutil.ToInt(val)
 		case "uint":
-			val, err = ToUint(val)
+			val, err = mathutil.ToUint(val)
 		case "int64":
-			val, err = ToInt64(val)
+			val, err = mathutil.ToInt64(val)
 		case "unique":
 			val = Unique(val)
 		case "trimStrings":
 			if ss, ok := val.([]string); ok {
-				val = TrimStrings(ss)
+				val = arrutil.TrimStrings(ss)
 			} else {
 				err = errInvalidParam
 			}
 		case "stringsToInts":
 			if ss, ok := val.([]string); ok {
-				val, err = StringsToInts(ss)
+				val, err = arrutil.StringsToInts(ss)
 			} else {
 				err = errInvalidParam
 			}
@@ -45,96 +49,57 @@ func Apply(name string, val interface{}, args []string) (interface{}, error) {
 	// val is must be string.
 	switch realName {
 	case "bool":
-		val, err = ToBool(str)
+		val, err = strutil.ToBool(str)
 	case "float":
-		val, err = ToFloat(str)
+		val, err = mathutil.ToFloat(str)
 	case "trim":
-		val = Trim(str, args...)
+		val = strutil.Trim(str, args...)
 	case "trimLeft":
-		val = TrimLeft(str, args...)
+		val = strutil.TrimLeft(str, args...)
 	case "trimRight":
-		val = TrimRight(str, args...)
+		val = strutil.TrimRight(str, args...)
 	case "title":
 		val = Title(str)
 	case "email":
-		val = Email(str)
+		val = strutil.FilterEmail(str)
 	case "substr":
-		val = Substr(str, MustInt(args[0]), MustInt(args[1]))
+		val = strutil.Substr(str, MustInt(args[0]), MustInt(args[1]))
 	case "lower":
-		val = Lowercase(str)
+		val = strutil.Lowercase(str)
 	case "upper":
-		val = Uppercase(str)
+		val = strutil.Uppercase(str)
 	case "lowerFirst":
-		val = LowerFirst(str)
+		val = strutil.LowerFirst(str)
 	case "upperFirst":
-		val = UpperFirst(str)
+		val = strutil.UpperFirst(str)
 	case "upperWord":
-		val = UpperWord(str)
+		val = strutil.UpperWord(str)
 	case "snakeCase":
-		val = SnakeCase(str, args...)
+		val = strutil.SnakeCase(str, args...)
 	case "camelCase":
-		val = CamelCase(str, args...)
+		val = strutil.CamelCase(str, args...)
 	case "URLEncode":
-		val = URLEncode(str)
+		val = strutil.URLEncode(str)
 	case "URLDecode":
-		val = URLDecode(str)
+		val = strutil.URLDecode(str)
 	case "escapeJS":
-		val = EscapeJS(str)
+		val = strutil.EscapeJS(str)
 	case "escapeHTML":
-		val = EscapeHTML(str)
+		val = strutil.EscapeHTML(str)
 	case "strToInts":
-		val, err = StrToInts(str, args...)
+		val, err = strutil.ToInts(str, args...)
 	case "strToSlice":
-		val = StrToSlice(str, args...)
+		val = strutil.ToSlice(str, args...)
 	case "strToTime":
-		val, err = StrToTime(str)
+		val, err = strutil.ToTime(str)
 	}
 
 	return val, err
 }
 
 // GetByPath get value from a map[string]interface{}. eg "top" "top.sub"
-func GetByPath(key string, mp map[string]interface{}) (val interface{}, ok bool) {
-	if val, ok := mp[key]; ok {
-		return val, true
-	}
-
-	// has sub key? eg. "top.sub"
-	if !strings.ContainsRune(key, '.') {
-		return nil, false
-	}
-
-	keys := strings.Split(key, ".")
-	topK := keys[0]
-
-	// find top item data based on top key
-	var item interface{}
-	if item, ok = mp[topK]; !ok {
-		return
-	}
-
-	for _, k := range keys[1:] {
-		switch tData := item.(type) {
-		case map[string]string: // is simple map
-			item, ok = tData[k]
-			if !ok {
-				return
-			}
-		case map[string]interface{}: // is map(decode from toml/json)
-			if item, ok = tData[k]; !ok {
-				return
-			}
-		case map[interface{}]interface{}: // is map(decode from yaml)
-			if item, ok = tData[k]; !ok {
-				return
-			}
-		default: // error
-			ok = false
-			return
-		}
-	}
-
-	return item, true
+func GetByPath(key string, mp map[string]interface{}) (interface{}, bool) {
+	return maputil.GetByPath(key, mp)
 }
 
 func parseArgString(argStr string) (ss []string) {
@@ -146,20 +111,5 @@ func parseArgString(argStr string) (ss []string) {
 		return []string{argStr}
 	}
 
-	return stringSplit(argStr, ",")
-}
-
-func stringSplit(str, sep string) (ss []string) {
-	str = strings.TrimSpace(str)
-	if str == "" {
-		return
-	}
-
-	for _, val := range strings.Split(str, sep) {
-		if val = strings.TrimSpace(val); val != "" {
-			ss = append(ss, val)
-		}
-	}
-
-	return
+	return strutil.Split(argStr, ",")
 }

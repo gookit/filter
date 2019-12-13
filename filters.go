@@ -10,9 +10,12 @@ package filter
 import (
 	"net/url"
 	"strings"
+
+	"github.com/gookit/goutil/arrutil"
+	"github.com/gookit/goutil/strutil"
 )
 
-var dontLimitType = map[string]int{
+var dontLimitType = map[string]uint8{
 	"int":    1,
 	"uint":   1,
 	"int64":  1,
@@ -31,7 +34,7 @@ var filterAliases = map[string]string{
 	"snake":   "snakeCase",
 	"ltrim":   "trimLeft",
 	"rtrim":   "trimRight",
-	//
+	// --
 	"lcFirst":    "lowerFirst",
 	"ucFirst":    "upperFirst",
 	"ucWord":     "upperWord",
@@ -46,7 +49,7 @@ var filterAliases = map[string]string{
 	"encodeUrl":  "URLEncode",
 	"urlDecode":  "URLDecode",
 	"decodeUrl":  "URLDecode",
-	//
+	// convert string
 	"str2ints":  "strToInts",
 	"str2arr":   "strToSlice",
 	"str2list":  "strToSlice",
@@ -62,7 +65,6 @@ func Name(name string) string {
 	if rName, ok := filterAliases[name]; ok {
 		return rName
 	}
-
 	return name
 }
 
@@ -98,17 +100,8 @@ func TrimRight(s string, cutSet ...string) string {
 }
 
 // TrimStrings trim string slice item.
-func TrimStrings(ss []string, cutSet ...string) (ns []string) {
-	hasCutSet := len(cutSet) > 0 && cutSet[0] != ""
-
-	for _, str := range ss {
-		if hasCutSet {
-			ns = append(ns, strings.Trim(str, cutSet[0]))
-		} else {
-			ns = append(ns, strings.TrimSpace(str))
-		}
-	}
-	return
+func TrimStrings(ss []string, cutSet ...string) []string {
+	return arrutil.TrimStrings(ss, cutSet...)
 }
 
 // URLEncode encode url string.
@@ -190,29 +183,10 @@ func Unique(val interface{}) interface{} {
 
 // Substr cut string
 func Substr(s string, pos, length int) string {
-	runes := []rune(s)
-	strLen := len(runes)
-
-	if pos >= strLen {
-		return ""
-	}
-
-	l := pos + length
-	if l > strLen {
-		l = strLen
-	}
-
-	return string(runes[pos:l])
+	return strutil.Substr(s, pos, length)
 }
 
 // Email filter, clear invalid chars.
 func Email(s string) string {
-	s = strings.TrimSpace(s)
-	i := strings.LastIndex(s, "@")
-	if i == -1 {
-		return s
-	}
-
-	// According to rfc5321, "The local-part of a mailbox MUST BE treated as case sensitive"
-	return s[0:i] + "@" + strings.ToLower(s[i+1:])
+	return strutil.FilterEmail(s)
 }

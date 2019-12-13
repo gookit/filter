@@ -82,10 +82,10 @@ map[string]interface {}{
 ## Filters & Converters
 
 - `ToBool/Bool(s string) (bool, error)`
-- `ToFloat/Float(s string) (float64, error)`
-- `ToInt/Int(s string) (int, error)`
-- `ToUint/Uint(s string) (uint64, error)`
-- `ToInt64/Int64(s string) (int64, error)`
+- `ToFloat/Float(v interface{}) (float64, error)`
+- `ToInt/Int(v interface{}) (int, error)`
+- `ToUint/Uint(v interface{}) (uint64, error)`
+- `ToInt64/Int64(v interface{}) (int64, error)`
 - `ToString/String(v interface{}) (string, error)`
 - `MustBool(s string) bool`
 - `MustFloat(s string) float64`

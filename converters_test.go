@@ -208,10 +208,11 @@ func TestCamelCase(t *testing.T) {
 func TestStrToInts(t *testing.T) {
 	is := assert.New(t)
 
-	_, err := StrToInts("a,b,c")
+	ints, err := StrToInts("a,b,c")
 	is.Error(err)
+	is.Len(ints, 0)
 
-	ints, err := StrToInts("1,2,3")
+	ints, err = StrToInts("1,2,3")
 	is.Nil(err)
 	is.Equal([]int{1, 2, 3}, ints)
 }
@@ -254,6 +255,21 @@ func TestStringsToInts(t *testing.T) {
 
 	_, err = StringsToInts([]string{"a", "b"})
 	is.Error(err)
+}
+
+func TestEscape(t *testing.T) {
+	tests := struct{ give, want string }{
+		"<p>some text</p>",
+		"&lt;p&gt;some text&lt;/p&gt;",
+	}
+
+	assert.Equal(t, tests.want, EscapeHTML(tests.give))
+
+	tests = struct{ give, want string }{
+		"<script>var a = 23;</script>",
+		`\x3Cscript\x3Evar a = 23;\x3C/script\x3E`,
+	}
+	assert.Equal(t, tests.want, EscapeJS(tests.give))
 }
 
 func TestStrToTime(t *testing.T) {
