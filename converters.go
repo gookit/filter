@@ -19,7 +19,7 @@ var (
 	Title = strings.ToTitle
 
 	// EscapeJS escape javascript string
-	EscapeJS   = template.JSEscapeString
+	EscapeJS = template.JSEscapeString
 	// EscapeHTML escape html string
 	EscapeHTML = template.HTMLEscapeString
 	// error for params
@@ -58,7 +58,7 @@ func MustUint(in interface{}) uint64 {
 }
 
 // ToUint convert string to uint
-func ToUint(in interface{}) ( uint64, error) {
+func ToUint(in interface{}) (uint64, error) {
 	return mathutil.ToUint(in)
 }
 
