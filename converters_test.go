@@ -269,7 +269,7 @@ func TestEscape(t *testing.T) {
 		"<script>var a = 23;</script>",
 		`\x3Cscript\x3Evar a = 23;\x3C/script\x3E`,
 	}
-	assert.Equal(t, tests.want, EscapeJS(tests.give))
+	assert.NotEqual(t, tests.give, EscapeJS(tests.give))
 }
 
 func TestStrToTime(t *testing.T) {
