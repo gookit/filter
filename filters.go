@@ -19,6 +19,7 @@ var dontLimitType = map[string]uint8{
 	"int":    1,
 	"uint":   1,
 	"int64":  1,
+	"float":  1,
 	"unique": 1,
 	//
 	"trimStrings":   1,
