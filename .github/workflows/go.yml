@@ -1,4 +1,4 @@
-name: action-tests
+name: Unit-Tests
 on:
   push:
     paths:
