@@ -23,6 +23,8 @@ func Apply(name string, val interface{}, args []string) (interface{}, error) {
 			val, err = mathutil.ToUint(val)
 		case "int64":
 			val, err = mathutil.ToInt64(val)
+		case "float":
+			val, err = mathutil.ToFloat(val)
 		case "unique":
 			val = Unique(val)
 		case "trimStrings":
@@ -50,8 +52,6 @@ func Apply(name string, val interface{}, args []string) (interface{}, error) {
 	switch realName {
 	case "bool":
 		val, err = strutil.ToBool(str)
-	case "float":
-		val, err = mathutil.ToFloat(str)
 	case "trim":
 		val = strutil.Trim(str, args...)
 	case "trimLeft":
