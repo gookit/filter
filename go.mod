@@ -1,6 +1,6 @@
 module github.com/gookit/filter
 
-go 1.12
+go 1.13
 
 require (
 	github.com/gookit/goutil v0.3.15
