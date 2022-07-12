@@ -3,6 +3,6 @@ module github.com/gookit/filter
 go 1.13
 
 require (
-	github.com/gookit/goutil v0.5.6
+	github.com/gookit/goutil v0.5.7
 	github.com/stretchr/testify v1.8.0
 )
