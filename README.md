@@ -2,7 +2,6 @@
 
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/gookit/filter)](https://github.com/gookit/filter)
 [![GoDoc](https://godoc.org/github.com/gookit/filter?status.svg)](https://godoc.org/github.com/gookit/filter)
-[![Build Status](https://travis-ci.org/gookit/filter.svg?branch=master)](https://travis-ci.org/gookit/filter)
 [![Actions Status](https://github.com/gookit/filter/workflows/Unit-Tests/badge.svg)](https://github.com/gookit/filter/actions)
 [![Coverage Status](https://coveralls.io/repos/github/gookit/filter/badge.svg?branch=master)](https://coveralls.io/github/gookit/filter?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gookit/filter)](https://goreportcard.com/report/github.com/gookit/filter)
@@ -65,7 +64,7 @@ fmt.Printf("%#v\n", newData)
 // f.BindStruct(&user)
 ```
 
-Output:
+**Output**:
 
 ```go
 map[string]interface {}{
