@@ -1,10 +1,10 @@
 # Filter
 
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/gookit/filter)](https://github.com/gookit/filter)
-[![GoDoc](https://pkg.go.dev/github.com/gookit/filter?status.svg)](https://pkg.go.dev/github.com/gookit/filter)
 [![Actions Status](https://github.com/gookit/filter/workflows/Unit-Tests/badge.svg)](https://github.com/gookit/filter/actions)
 [![Coverage Status](https://coveralls.io/repos/github/gookit/filter/badge.svg?branch=master)](https://coveralls.io/github/gookit/filter?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gookit/filter)](https://goreportcard.com/report/github.com/gookit/filter)
+[![Go Reference](https://pkg.go.dev/badge/github.com/gookit/filter.svg)](https://pkg.go.dev/github.com/gookit/filter)
 
 `filter` - 提供过滤,净化以及转换Go数据等.
 
@@ -16,13 +16,13 @@
 
 > TIP: 想要过滤并验证Map,Struct数据,请使用 A [gookit/validate](github.com/gookit/validate)
 
-## Install
+## 安装
 
 ```shell
 go get github.com/gookit/filter
 ```
 
-## Func Usage
+## 直接使用方法
 
 Quick usage:
 
@@ -33,7 +33,7 @@ intVal, err := filter.Int("20") // int(20)
 strings := filter.Str2Slice("a,b, c", ",") // []string{"a", "b", "c"}
 ```
 
-## Filtration
+## 过滤Map
 
 Filtering data:
 
