@@ -2,7 +2,7 @@
 //
 // Source code and other details for the project are available at GitHub:
 //
-// 	https://github.com/gookit/filter
+//	https://github.com/gookit/filter
 //
 // More usage please see README and test
 package filter
@@ -36,20 +36,22 @@ var filterAliases = map[string]string{
 	"ltrim":   "trimLeft",
 	"rtrim":   "trimRight",
 	// --
-	"lcFirst":    "lowerFirst",
-	"ucFirst":    "upperFirst",
-	"ucWord":     "upperWord",
-	"distinct":   "unique",
-	"trimList":   "trimStrings",
-	"trimSpace":  "trim",
-	"uppercase":  "upper",
-	"lowercase":  "lower",
-	"escapeJs":   "escapeJS",
-	"escapeHtml": "escapeHTML",
-	"urlEncode":  "URLEncode",
-	"encodeUrl":  "URLEncode",
-	"urlDecode":  "URLDecode",
-	"decodeUrl":  "URLDecode",
+	"lcFirst":      "lowerFirst",
+	"ucFirst":      "upperFirst",
+	"ucWord":       "upperWord",
+	"distinct":     "unique",
+	"trimList":     "trimStrings",
+	"trim_list":    "trimStrings",
+	"trim_strings": "trimStrings",
+	"trimSpace":    "trim",
+	"uppercase":    "upper",
+	"lowercase":    "lower",
+	"escapeJs":     "escapeJS",
+	"escapeHtml":   "escapeHTML",
+	"urlEncode":    "URLEncode",
+	"encodeUrl":    "URLEncode",
+	"urlDecode":    "URLDecode",
+	"decodeUrl":    "URLDecode",
 	// convert string
 	"str2ints":  "strToInts",
 	"str2arr":   "strToSlice",
@@ -57,7 +59,7 @@ var filterAliases = map[string]string{
 	"str2array": "strToSlice",
 	"strToArr":  "strToSlice",
 	"str2time":  "strToTime",
-	// strings2ints
+	// strings to ints
 	"strings2ints": "stringsToInts",
 }
 
