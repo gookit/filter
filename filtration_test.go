@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/gookit/goutil/testutil/assert"
 )
 
 func TestFiltration(t *testing.T) {
@@ -19,42 +19,42 @@ func TestFiltration(t *testing.T) {
 		"sub2": map[interface{}]interface{}{"k0": "v0"},
 	})
 
-	is.Equal("strToTime", Name("str2time"))
-	is.Equal("some", Name("some"))
+	is.Eq("strToTime", Name("str2time"))
+	is.Eq("some", Name("some"))
 
-	is.Equal("", fl.String("key0"))
-	is.Equal(0, fl.Int("key1"))
+	is.Eq("", fl.String("key0"))
+	is.Eq(0, fl.Int("key1"))
 
 	val, ok := fl.Get("key1")
 	is.True(ok)
-	is.Equal("2", val)
+	is.Eq("2", val)
 
 	_, ok = fl.Get("sub.not-exist")
 	is.False(ok)
 	val, ok = fl.Get("sub.k0")
 	is.True(ok)
-	is.Equal("v0", val)
+	is.Eq("v0", val)
 
 	val, ok = fl.Safe("key1")
 	is.False(ok)
-	is.Equal(nil, val)
+	is.Eq(nil, val)
 
 	_, ok = fl.Raw("sub1.not-exist")
 	is.False(ok)
 	val, ok = fl.Raw("sub1.k0")
 	is.True(ok)
-	is.Equal("v0", val)
+	is.Eq("v0", val)
 
 	val, ok = fl.Raw("sub2.k0")
 	is.True(ok)
-	is.Equal("v0", val)
+	is.Eq("v0", val)
 
 	val, ok = fl.Raw("key1")
 	is.True(ok)
-	is.Equal("2", val)
+	is.Eq("2", val)
 	val, ok = fl.Raw("not-exist")
 	is.False(ok)
-	is.Equal(nil, val)
+	is.Eq(nil, val)
 
 	f := New(map[string]interface{}{
 		"key0":     "34",
@@ -77,16 +77,16 @@ func TestFiltration(t *testing.T) {
 
 	is.Nil(f.Sanitize())
 	is.NotEmpty(f.CleanData())
-	is.Equal(int64(34), f.SafeVal("key0"))
-	is.Equal([]int{1, 2, 3}, f.SafeVal("ids"))
-	is.Equal([]string{"a", "b", "c"}, f.SafeVal("strings"))
-	is.Equal("Inhere", f.String("name"))
-	is.Equal("my@email.com", f.String("email"))
-	is.Equal("&lt;p&gt;some text&lt;/p&gt;", f.SafeVal("htmlCode"))
+	is.Eq(int64(34), f.SafeVal("key0"))
+	is.Eq([]int{1, 2, 3}, f.SafeVal("ids"))
+	is.Eq([]string{"a", "b", "c"}, f.SafeVal("strings"))
+	is.Eq("Inhere", f.String("name"))
+	is.Eq("my@email.com", f.String("email"))
+	is.Eq("&lt;p&gt;some text&lt;/p&gt;", f.SafeVal("htmlCode"))
 	// < 1.15 \x3Cscript\x3Evar a = 23;\x3C/script\x3E
 	// >= 1.15 \u003Cscript\u003Evar a \u003D 23;\u003C/script\u003E
-	// is.Equal(`\x3Cscript\x3Evar a = 23;\x3C/script\x3E`, f.SafeVal("jsCode"))
-	is.NotEqual("<script>var a = 23;</script>", f.SafeVal("jsCode"))
+	// is.Eq(`\x3Cscript\x3Evar a = 23;\x3C/script\x3E`, f.SafeVal("jsCode"))
+	is.NotEq("<script>var a = 23;</script>", f.SafeVal("jsCode"))
 
 	// clear all
 	f.Clear()
@@ -116,8 +116,8 @@ func TestFiltration_AddRule(t *testing.T) {
 		return strings.TrimSpace(v.(string)), nil
 	})
 
-	is.NoError(f.Filtering())
-	is.Equal("INHERE", f.String("name"))
+	is.NoErr(f.Filtering())
+	is.Eq("INHERE", f.String("name"))
 
 	is.Len(f.CleanData(), 1)
 	is.Contains(f.CleanData(), "name")
@@ -128,8 +128,8 @@ func TestFiltration_AddRule(t *testing.T) {
 	is.NotEmpty(f.RawData())
 
 	f.AddRule("name", "trim|lower")
-	is.NoError(f.Filtering())
-	is.Equal("inhere", f.String("name"))
+	is.NoErr(f.Filtering())
+	is.Eq("inhere", f.String("name"))
 
 	// clear all data
 	is.NotEmpty(f.CleanData())
@@ -139,28 +139,28 @@ func TestFiltration_AddRule(t *testing.T) {
 	f.LoadData(map[string]interface{}{
 		"name": " Inhere0 ",
 	})
-	is.NoError(f.Filtering())
-	is.Equal("inhere0", f.String("name"))
-	is.Equal("", f.String("not-exist"))
+	is.NoErr(f.Filtering())
+	is.Eq("inhere0", f.String("name"))
+	is.Eq("", f.String("not-exist"))
 
 	f.ResetRules()
 	f.AddRule("not-exist", "trim").SetDefaultVal(" def val ")
-	is.NoError(f.Filtering())
-	is.Equal("def val", f.String("not-exist"))
+	is.NoErr(f.Filtering())
+	is.Eq("def val", f.String("not-exist"))
 
 	// trimStrings error
 	f = New(map[string]interface{}{
 		"ints": []int{1, 2, 3},
 	})
 	f.AddRule("ints", "trimStrings")
-	is.Error(f.Filtering())
-	is.Equal("invalid input parameter", f.Err().Error())
+	is.Err(f.Filtering())
+	is.Eq("invalid input parameter", f.Err().Error())
 
 	// stringsToInts error
 	f.ResetRules()
 	f.AddRule("ints", "stringsToInts")
-	is.Error(f.Filtering())
-	is.Equal("invalid input parameter", f.Err().Error())
+	is.Err(f.Filtering())
+	is.Eq("invalid input parameter", f.Err().Error())
 }
 
 func TestFiltration_Filtering(t *testing.T) {
@@ -198,22 +198,22 @@ func TestFiltration_Filtering(t *testing.T) {
 	// get value
 	is.True(f.Bool("remember"))
 	is.False(f.Bool("not-exist"))
-	is.Equal(50, f.Int("age"))
-	is.Equal(0, f.Int("not-exist"))
-	is.Equal(50, f.MustGet("age"))
-	is.Equal(int64(50), f.Int64("age"))
-	is.Equal(int64(0), f.Int64("not-exist"))
-	is.Equal(50.34, f.MustGet("money"))
-	is.Equal([]int{1, 2}, f.MustGet("sub1"))
+	is.Eq(50, f.Int("age"))
+	is.Eq(0, f.Int("not-exist"))
+	is.Eq(50, f.MustGet("age"))
+	is.Eq(int64(50), f.Int64("age"))
+	is.Eq(int64(0), f.Int64("not-exist"))
+	is.Eq(50.34, f.MustGet("money"))
+	is.Eq([]int{1, 2}, f.MustGet("sub1"))
 	is.Len(f.MustGet("ids"), 2)
-	is.Equal([]string{"go", "lib"}, f.MustGet("tags"))
-	is.Equal("INHERE", f.CleanData()["name"])
-	is.Equal("word", f.String("str1"))
-	is.Equal("hello", f.String("str2"))
+	is.Eq([]string{"go", "lib"}, f.MustGet("tags"))
+	is.Eq("INHERE", f.CleanData()["name"])
+	is.Eq("word", f.String("str1"))
+	is.Eq("hello", f.String("str2"))
 
 	f = New(data)
 	f.AddRule("name", "int")
-	is.Error(f.Sanitize())
+	is.Err(f.Sanitize())
 
 	data["name"] = " inhere "
 	data["sDate"] = "2018-10-16 12:34"
@@ -233,24 +233,24 @@ func TestFiltration_Filtering(t *testing.T) {
 		"str2":  "lowerFirst",
 	})
 	is.Nil(f.Sanitize())
-	is.Equal("Inhere", f.String("name"))
-	is.Equal("WORD", f.String("str1"))
-	is.Equal("Hello World", f.String("msg"))
-	is.Equal("hello_world", f.String("msg1"))
-	is.Equal("helloWorld", f.String("msg2"))
-	is.Equal("hELLO", f.String("str2"))
+	is.Eq("Inhere", f.String("name"))
+	is.Eq("WORD", f.String("str1"))
+	is.Eq("Hello World", f.String("msg"))
+	is.Eq("hello_world", f.String("msg1"))
+	is.Eq("helloWorld", f.String("msg2"))
+	is.Eq("hELLO", f.String("str2"))
 
 	sTime, ok := f.Safe("sDate")
 	is.True(ok)
-	is.Equal("2018-10-16 12:34:00 +0000 UTC", fmt.Sprintf("%v", sTime))
+	is.Eq("2018-10-16 12:34:00 +0000 UTC", fmt.Sprintf("%v", sTime))
 
 	data["url"] = "a.com?p=1"
 	f = New(data)
 	f.AddRule("url", "urlEncode")
 	f.AddRule("msg1", "substr:0,2")
 	is.Nil(f.Sanitize())
-	is.Equal("he", f.String("msg1"))
-	is.Equal("a.com?p%3D1", f.String("url"))
+	is.Eq("he", f.String("msg1"))
+	is.Eq("a.com?p%3D1", f.String("url"))
 
 	// bind
 	f = New(map[string]interface{}{
@@ -268,6 +268,6 @@ func TestFiltration_Filtering(t *testing.T) {
 	}{}
 	err := f.BindStruct(user)
 	is.Nil(err)
-	is.Equal(89, user.Age)
-	is.Equal("Inhere", user.Name)
+	is.Eq(89, user.Age)
+	is.Eq("Inhere", user.Name)
 }

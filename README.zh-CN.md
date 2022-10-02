@@ -6,9 +6,9 @@
 [![Coverage Status](https://coveralls.io/repos/github/gookit/filter/badge.svg?branch=master)](https://coveralls.io/github/gookit/filter?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gookit/filter)](https://goreportcard.com/report/github.com/gookit/filter)
 
-`filter` - provide filtering, sanitizing, and conversion of Golang data.
+`filter` - 提供过滤,净化以及转换Go数据等.
 
-> 中文说明请查看 **[README.zh-CN](README.zh-CN.md)**
+> English, please see **[README](README.md)**
 
 ## GoDoc
 

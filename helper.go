@@ -14,7 +14,7 @@ func Apply(name string, val interface{}, args []string) (interface{}, error) {
 	var err error
 	realName := Name(name)
 
-	// don't Limit value type
+	// don't limit value type
 	if _, ok := dontLimitType[realName]; ok {
 		switch realName {
 		case "int":

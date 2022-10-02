@@ -21,7 +21,7 @@ var dontLimitType = map[string]uint8{
 	"int64":  1,
 	"float":  1,
 	"unique": 1,
-	//
+	// list
 	"trimStrings":   1,
 	"stringsToInts": 1,
 }
@@ -44,14 +44,21 @@ var filterAliases = map[string]string{
 	"trim_list":    "trimStrings",
 	"trim_strings": "trimStrings",
 	"trimSpace":    "trim",
+	"trim_space":   "trim",
 	"uppercase":    "upper",
 	"lowercase":    "lower",
 	"escapeJs":     "escapeJS",
+	"escape_js":    "escapeJS",
 	"escapeHtml":   "escapeHTML",
+	"escape_html":  "escapeHTML",
 	"urlEncode":    "URLEncode",
+	"url_encode":   "URLEncode",
 	"encodeUrl":    "URLEncode",
+	"encode_url":   "URLEncode",
 	"urlDecode":    "URLDecode",
+	"url_decode":   "URLDecode",
 	"decodeUrl":    "URLDecode",
+	"decode_url":   "URLDecode",
 	// convert string
 	"str2ints":  "strToInts",
 	"str2arr":   "strToSlice",
@@ -98,7 +105,6 @@ func TrimRight(s string, cutSet ...string) string {
 	if len(cutSet) > 0 {
 		return strings.TrimRight(s, cutSet[0])
 	}
-
 	return strings.TrimRight(s, " ")
 }
 
@@ -112,7 +118,6 @@ func URLEncode(s string) string {
 	if pos := strings.IndexRune(s, '?'); pos > -1 { // escape query data
 		return s[0:pos+1] + url.QueryEscape(s[pos+1:])
 	}
-
 	return s
 }
 
@@ -124,7 +129,6 @@ func URLDecode(s string) string {
 			return s[0:pos+1] + qy
 		}
 	}
-
 	return s
 }
 

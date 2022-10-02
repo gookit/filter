@@ -72,10 +72,12 @@ func (f *Filtration) Clear() {
  *************************************************************/
 
 // AddRule add filter(s) rule.
+//
 // Usage:
-// 	f.AddRule("name", "trim")
-// 	f.AddRule("age", "int")
-// 	f.AddRule("age", "trim|int")
+//
+//	f.AddRule("name", "trim")
+//	f.AddRule("age", "int")
+//	f.AddRule("age", "trim|int")
 func (f *Filtration) AddRule(field string, rule interface{}) *Rule {
 	fields := strutil.Split(field, ",")
 	if len(fields) == 0 {
@@ -104,16 +106,17 @@ func (f *Filtration) AddRule(field string, rule interface{}) *Rule {
 }
 
 // AddRules add multi rules.
+//
 // Usage:
-// 	f.AddRules(map[string]string{
-// 		"name": "trim|lower",
-// 		"age": "trim|int",
-// 	})
+//
+//	f.AddRules(map[string]string{
+//		"name": "trim|lower",
+//		"age": "trim|int",
+//	})
 func (f *Filtration) AddRules(rules map[string]string) *Filtration {
 	for field, rule := range rules {
 		f.AddRule(field, rule)
 	}
-
 	return f
 }
 
@@ -140,7 +143,7 @@ func (f *Filtration) Filtering() error {
 	return f.err
 }
 
-// IsOK of the apply filters
+// IsOK of to apply filters
 func (f *Filtration) IsOK() bool {
 	return f.err == nil
 }
@@ -191,7 +194,6 @@ func (f *Filtration) Int(key string) int {
 	if val, ok := f.Safe(key); ok {
 		return MustInt(val)
 	}
-
 	return 0
 }
 
@@ -200,7 +202,6 @@ func (f *Filtration) Int64(key string) int64 {
 	if val, ok := f.Safe(key); ok {
 		return MustInt64(val)
 	}
-
 	return 0
 }
 
@@ -224,7 +225,6 @@ func (f *Filtration) String(key string) string {
 	if str, ok := val.(string); ok {
 		return str
 	}
-
 	return fmt.Sprint(val)
 }
 
@@ -287,8 +287,10 @@ func (r *Rule) SetFilterFunc(fn func(val interface{}) (interface{}, error)) *Rul
 }
 
 // AddFilters add multi filter(s).
+//
 // Usage:
-// 	r.AddFilters("int", "str2arr:,")
+//
+//	r.AddFilters("int", "str2arr:,")
 func (r *Rule) AddFilters(filters ...string) *Rule {
 	for _, filterName := range filters {
 		pos := strings.IndexRune(filterName, ':')
