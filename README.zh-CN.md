@@ -12,9 +12,9 @@
 
 ## GoDoc
 
-- [godoc for github](https://pkg.go.dev/github.com/gookit/filter)
+- [godoc](https://pkg.go.dev/github.com/gookit/filter)
 
-> TIP: 想要过滤并验证Map,Struct数据,请使用 A [gookit/validate](github.com/gookit/validate)
+> TIP: 想要过滤并验证Map,Struct数据,请使用 A [gookit/validate](https://github.com/gookit/validate)
 
 ## 安装
 
