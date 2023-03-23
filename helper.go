@@ -91,7 +91,7 @@ func Apply(name string, val interface{}, args []string) (interface{}, error) {
 	case "strToSlice":
 		val = strutil.ToSlice(str, args...)
 	case "strToTime":
-		val, err = strutil.ToTime(str)
+		val, err = strutil.ToTime(str, args...)
 	}
 
 	return val, err
