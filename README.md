@@ -38,7 +38,7 @@ strings := filter.Str2Slice("a,b, c", ",") // []string{"a", "b", "c"}
 Filtering data:
 
 ```go
-data := map[string]interface{}{
+data := map[string]any{
     "name":     " inhere ",
     "age":      "50",
     "money":    "50.34",
@@ -68,7 +68,7 @@ f.AddRules(map[string]string{
 f.Filtering() 
 
 // get filtered data
-newData := f.FilteredData()
+newData := f.CleanData()
 fmt.Printf("%#v\n", newData)
 // f.BindStruct(&user)
 ```
