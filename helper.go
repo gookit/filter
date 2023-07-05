@@ -10,7 +10,7 @@ import (
 )
 
 // Apply a filter by name. for filter value.
-func Apply(name string, val interface{}, args []string) (interface{}, error) {
+func Apply(name string, val any, args []string) (any, error) {
 	var err error
 	realName := Name(name)
 
@@ -97,8 +97,8 @@ func Apply(name string, val interface{}, args []string) (interface{}, error) {
 	return val, err
 }
 
-// GetByPath get value from a map[string]interface{}. eg "top" "top.sub"
-func GetByPath(key string, mp map[string]interface{}) (interface{}, bool) {
+// GetByPath get value from a map[string]any. eg "top" "top.sub"
+func GetByPath(key string, mp map[string]any) (any, bool) {
 	return maputil.GetByPath(key, mp)
 }
 
@@ -110,6 +110,5 @@ func parseArgString(argStr string) (ss []string) {
 	if len(argStr) == 1 { // one char
 		return []string{argStr}
 	}
-
 	return strutil.Split(argStr, ",")
 }

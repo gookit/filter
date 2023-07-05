@@ -11,7 +11,7 @@ import (
 func TestValToInt(t *testing.T) {
 	is := assert.New(t)
 
-	tests := []interface{}{
+	tests := []any{
 		2,
 		int8(2), int16(2), int32(2), int64(2),
 		uint(2), uint8(2), uint16(2), uint32(2), uint64(2),
@@ -69,7 +69,7 @@ func TestValToInt(t *testing.T) {
 func TestValToStr(t *testing.T) {
 	is := assert.New(t)
 
-	tests := []interface{}{
+	tests := []any{
 		2,
 		int8(2), int16(2), int32(2), int64(2),
 		uint(2), uint8(2), uint16(2), uint32(2), uint64(2),
@@ -79,7 +79,7 @@ func TestValToStr(t *testing.T) {
 		is.Eq("2", MustString(in))
 	}
 
-	tests1 := []interface{}{
+	tests1 := []any{
 		float32(2.3), 2.3,
 	}
 	for _, in := range tests1 {

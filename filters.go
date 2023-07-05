@@ -133,7 +133,7 @@ func URLDecode(s string) string {
 }
 
 // Unique value in the given array, slice.
-func Unique(val interface{}) interface{} {
+func Unique(val any) any {
 	switch tv := val.(type) {
 	case []int:
 		mp := make(map[int]int)

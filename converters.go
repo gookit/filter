@@ -31,37 +31,37 @@ var (
  *************************************************************/
 
 // Int convert string to int
-func Int(in interface{}) (int, error) { return ToInt(in) }
+func Int(in any) (int, error) { return ToInt(in) }
 
 // MustInt convert string to int
-func MustInt(in interface{}) int {
+func MustInt(in any) int {
 	val, _ := ToInt(in)
 	return val
 }
 
 // ToInt convert string to int
-func ToInt(in interface{}) (int, error) { return mathutil.ToInt(in) }
+func ToInt(in any) (int, error) { return mathutil.ToInt(in) }
 
 // Uint convert string to uint
-func Uint(in interface{}) (uint64, error) { return ToUint(in) }
+func Uint(in any) (uint64, error) { return ToUint(in) }
 
 // MustUint convert string to uint
-func MustUint(in interface{}) uint64 {
+func MustUint(in any) uint64 {
 	val, _ := ToUint(in)
 	return val
 }
 
 // ToUint convert string to uint
-func ToUint(in interface{}) (uint64, error) { return mathutil.ToUint(in) }
+func ToUint(in any) (uint64, error) { return mathutil.ToUint(in) }
 
 // Int64 convert value to int64
-func Int64(in interface{}) (int64, error) { return ToInt64(in) }
+func Int64(in any) (int64, error) { return ToInt64(in) }
 
 // ToInt64 convert value to int64
-func ToInt64(val interface{}) (int64, error) { return mathutil.ToInt64(val) }
+func ToInt64(val any) (int64, error) { return mathutil.ToInt64(val) }
 
 // MustInt64 convert value to int64
-func MustInt64(in interface{}) int64 {
+func MustInt64(in any) int64 {
 	i64, _ := ToInt64(in)
 	return i64
 }
@@ -93,16 +93,16 @@ func MustBool(s string) bool {
 }
 
 // String convert val to string
-func String(val interface{}) (string, error) { return ToString(val) }
+func String(val any) (string, error) { return ToString(val) }
 
 // MustString convert value to string
-func MustString(in interface{}) string {
+func MustString(in any) string {
 	val, _ := ToString(in)
 	return val
 }
 
 // ToString convert value to string
-func ToString(val interface{}) (string, error) { return strutil.ToString(val) }
+func ToString(val any) (string, error) { return strutil.ToString(val) }
 
 /*************************************************************
  * change string case

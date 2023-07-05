@@ -11,12 +11,12 @@ import (
 func TestFiltration(t *testing.T) {
 	is := assert.New(t)
 
-	fl := New(map[string]interface{}{
+	fl := New(map[string]any{
 		"key0": " abc ",
 		"key1": "2",
 		"sub":  map[string]string{"k0": "v0"},
-		"sub1": map[string]interface{}{"k0": "v0"},
-		"sub2": map[interface{}]interface{}{"k0": "v0"},
+		"sub1": map[string]any{"k0": "v0"},
+		"sub2": map[any]any{"k0": "v0"},
 	})
 
 	is.Eq("strToTime", Name("str2time"))
@@ -56,7 +56,7 @@ func TestFiltration(t *testing.T) {
 	is.False(ok)
 	is.Eq(nil, val)
 
-	f := New(map[string]interface{}{
+	f := New(map[string]any{
 		"key0":     "34",
 		"name":     " inhere ",
 		"email":    " my@email.com ",
@@ -97,7 +97,7 @@ func TestFiltration_AddRule(t *testing.T) {
 	is := assert.New(t)
 
 	f := New(nil)
-	f.LoadData(map[string]interface{}{
+	f.LoadData(map[string]any{
 		"name": " INHERE ",
 		"age":  "50 ",
 	})
@@ -112,7 +112,7 @@ func TestFiltration_AddRule(t *testing.T) {
 		f.AddRule("name", []int{1})
 	})
 
-	f.AddRule("name", func(v interface{}) (interface{}, error) {
+	f.AddRule("name", func(v any) (any, error) {
 		return strings.TrimSpace(v.(string)), nil
 	})
 
@@ -136,7 +136,7 @@ func TestFiltration_AddRule(t *testing.T) {
 	f.ResetData(true)
 	is.Empty(f.RawData())
 	is.Empty(f.CleanData())
-	f.LoadData(map[string]interface{}{
+	f.LoadData(map[string]any{
 		"name": " Inhere0 ",
 	})
 	is.NoErr(f.Filtering())
@@ -149,7 +149,7 @@ func TestFiltration_AddRule(t *testing.T) {
 	is.Eq("def val", f.String("not-exist"))
 
 	// trimStrings error
-	f = New(map[string]interface{}{
+	f = New(map[string]any{
 		"ints": []int{1, 2, 3},
 	})
 	f.AddRule("ints", "trimStrings")
@@ -166,7 +166,7 @@ func TestFiltration_AddRule(t *testing.T) {
 func TestFiltration_Filtering(t *testing.T) {
 	is := assert.New(t)
 
-	data := map[string]interface{}{
+	data := map[string]any{
 		"name":     "inhere",
 		"age":      "50",
 		"money":    "50.34",
@@ -253,7 +253,7 @@ func TestFiltration_Filtering(t *testing.T) {
 	is.Eq("a.com?p%3D1", f.String("url"))
 
 	// bind
-	f = New(map[string]interface{}{
+	f = New(map[string]any{
 		"name": " inhere ",
 		"age":  " 89 ",
 	})
