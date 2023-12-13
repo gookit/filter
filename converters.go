@@ -35,24 +35,11 @@ func Int(in any) (int, error) { return ToInt(in) }
 
 // MustInt convert string to int
 func MustInt(in any) int {
-	val, _ := ToInt(in)
-	return val
+	return mathutil.MustInt(in)
 }
 
 // ToInt convert string to int
 func ToInt(in any) (int, error) { return mathutil.ToInt(in) }
-
-// Uint convert string to uint
-func Uint(in any) (uint64, error) { return ToUint(in) }
-
-// MustUint convert string to uint
-func MustUint(in any) uint64 {
-	val, _ := ToUint(in)
-	return val
-}
-
-// ToUint convert string to uint
-func ToUint(in any) (uint64, error) { return mathutil.ToUint(in) }
 
 // Int64 convert value to int64
 func Int64(in any) (int64, error) { return ToInt64(in) }
@@ -62,8 +49,29 @@ func ToInt64(val any) (int64, error) { return mathutil.ToInt64(val) }
 
 // MustInt64 convert value to int64
 func MustInt64(in any) int64 {
-	i64, _ := ToInt64(in)
-	return i64
+	return mathutil.MustInt64(in)
+}
+
+// Uint convert string to uint
+func Uint(in any) (uint, error) { return ToUint(in) }
+
+// ToUint convert string to uint
+func ToUint(in any) (uint, error) { return mathutil.ToUint(in) }
+
+// MustUint convert string to uint
+func MustUint(in any) uint {
+	return mathutil.MustUint(in)
+}
+
+// Uint64 convert string to uint64
+func Uint64(in any) (uint64, error) { return ToUint64(in) }
+
+// ToUint64 convert string to uint64
+func ToUint64(in any) (uint64, error) { return mathutil.ToUint64(in) }
+
+// MustUint64 convert string to uint64
+func MustUint64(in any) uint64 {
+	return mathutil.MustUint64(in)
 }
 
 // Float convert string to float

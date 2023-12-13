@@ -1,3 +1,10 @@
+// Package filter provide data filter, sanitize, convert process.
+//
+// Source code and other details for the project are available at GitHub:
+//
+//	https://github.com/gookit/filter
+//
+// More usage please see README and tests
 package filter
 
 import (
@@ -43,8 +50,13 @@ func Apply(name string, val any, args []string) (any, error) {
 		return val, err
 	}
 
-	str, isString := val.(string)
-	if !isString {
+	// check val is string
+	var str string
+
+	// up: support filter pointer string value
+	if poStr, ok := val.(*string); ok {
+		str = *poStr
+	} else if str, ok = val.(string); ok {
 		return nil, fmt.Errorf("filter: '%s' only use for string type value", name)
 	}
 

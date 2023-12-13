@@ -1,10 +1,3 @@
-// Package filter provide data filter, sanitize, convert
-//
-// Source code and other details for the project are available at GitHub:
-//
-//	https://github.com/gookit/filter
-//
-// More usage please see README and test
 package filter
 
 import (
@@ -87,7 +80,6 @@ func Trim(s string, cutSet ...string) string {
 	if len(cutSet) > 0 && cutSet[0] != "" {
 		return strings.Trim(s, cutSet[0])
 	}
-
 	return strings.TrimSpace(s)
 }
 
