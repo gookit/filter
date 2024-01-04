@@ -56,8 +56,8 @@ func Apply(name string, val any, args []string) (any, error) {
 	// up: support filter pointer string value
 	if poStr, ok := val.(*string); ok {
 		str = *poStr
-	} else if str, ok = val.(string); ok {
-		return nil, fmt.Errorf("filter: '%s' only use for string type value", name)
+	} else if str, ok = val.(string); !ok {
+		return nil, fmt.Errorf("filter: '%s' only use for string type, input %T", name, val)
 	}
 
 	// val is must be string.

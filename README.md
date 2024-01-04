@@ -14,7 +14,7 @@
 
 - [godoc](https://pkg.go.dev/github.com/gookit/filter)
 
-> TIP: To filter and validate Map, Struct data, use [gookit/validate](https://github.com/gookit/validate)
+> **NOTE**: To filter and validate Map, Struct data. Please use [gookit/validate](https://github.com/gookit/validate)
 
 ## Install
 
