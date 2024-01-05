@@ -35,21 +35,6 @@ func TestValToInt(t *testing.T) {
 		is.Eq(2, MustInt(in))
 	}
 
-	// To uint
-	uintVal, err := Uint("2")
-	is.Nil(err)
-	is.Eq(uint64(2), uintVal)
-
-	_, err = ToUint("-2")
-	is.Err(err)
-
-	is.Eq(uint64(0), MustUint("-2"))
-	is.Eq(uint64(0), MustUint("2a"))
-	is.Eq(uint64(0), MustUint(nil))
-	for _, in := range tests {
-		is.Eq(uint64(2), MustUint(in))
-	}
-
 	// To int64
 	i64Val, err := ToInt64("2")
 	is.Nil(err)
@@ -64,6 +49,37 @@ func TestValToInt(t *testing.T) {
 	for _, in := range tests {
 		is.Eq(int64(2), MustInt64(in))
 	}
+
+	// To uint
+	uintVal, err := Uint("2")
+	is.Nil(err)
+	is.Eq(uint(2), uintVal)
+
+	_, err = ToUint("-2")
+	is.Err(err)
+
+	is.Eq(uint(0), MustUint("-2"))
+	is.Eq(uint(0), MustUint("2a"))
+	is.Eq(uint(0), MustUint(nil))
+	for _, in := range tests {
+		is.Eq(uint(2), MustUint(in))
+	}
+
+	// To uint64
+	u64, err := Uint64("2")
+	is.Nil(err)
+	is.Eq(uint64(2), u64)
+
+	_, err = ToUint64("-2")
+	is.Err(err)
+
+	is.Eq(uint64(0), MustUint64("-2"))
+	is.Eq(uint64(0), MustUint64("2a"))
+	is.Eq(uint64(0), MustUint64(nil))
+	for _, in := range tests {
+		is.Eq(uint64(2), MustUint64(in))
+	}
+
 }
 
 func TestValToStr(t *testing.T) {
@@ -277,16 +293,16 @@ func TestEscape(t *testing.T) {
 func TestStrToTime(t *testing.T) {
 	is := assert.New(t)
 	tests := map[string]string{
-		"20180927":             "2018-09-27 00:00:00 +0000 UTC",
-		"2018-09-27":           "2018-09-27 00:00:00 +0000 UTC",
-		"2018-09-27 12":        "2018-09-27 12:00:00 +0000 UTC",
-		"2018-09-27T12":        "2018-09-27 12:00:00 +0000 UTC",
-		"2018-09-27 12:34":     "2018-09-27 12:34:00 +0000 UTC",
-		"2018-09-27T12:34":     "2018-09-27 12:34:00 +0000 UTC",
-		"2018-09-27 12:34:45":  "2018-09-27 12:34:45 +0000 UTC",
-		"2018-09-27T12:34:45":  "2018-09-27 12:34:45 +0000 UTC",
-		"2018/09/27 12:34:45":  "2018-09-27 12:34:45 +0000 UTC",
-		"2018/09/27T12:34:45Z": "2018-09-27 12:34:45 +0000 UTC",
+		"20180927":             "2018-09-27 00:00:00 +0800 CST",
+		"2018-09-27":           "2018-09-27 00:00:00 +0800 CST",
+		"2018-09-27 12":        "2018-09-27 12:00:00 +0800 CST",
+		"2018-09-27T12":        "2018-09-27 12:00:00 +0800 CST",
+		"2018-09-27 12:34":     "2018-09-27 12:34:00 +0800 CST",
+		"2018-09-27T12:34":     "2018-09-27 12:34:00 +0800 CST",
+		"2018-09-27 12:34:45":  "2018-09-27 12:34:45 +0800 CST",
+		"2018-09-27T12:34:45":  "2018-09-27 12:34:45 +0800 CST",
+		"2018/09/27 12:34:45":  "2018-09-27 12:34:45 +0800 CST",
+		"2018/09/27T12:34:45Z": "2018-09-27 12:34:45 +0800 CST",
 	}
 
 	for sample, want := range tests {

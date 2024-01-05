@@ -33,9 +33,9 @@ var (
 // Int convert string to int
 func Int(in any) (int, error) { return ToInt(in) }
 
-// MustInt convert string to int
+// MustInt convert string to int, alias of the mathutil.SafeInt
 func MustInt(in any) int {
-	return mathutil.MustInt(in)
+	return mathutil.SafeInt(in)
 }
 
 // ToInt convert string to int
@@ -47,9 +47,9 @@ func Int64(in any) (int64, error) { return ToInt64(in) }
 // ToInt64 convert value to int64
 func ToInt64(val any) (int64, error) { return mathutil.ToInt64(val) }
 
-// MustInt64 convert value to int64
+// MustInt64 convert value to int64, alias of the mathutil.SafeInt64
 func MustInt64(in any) int64 {
-	return mathutil.MustInt64(in)
+	return mathutil.SafeInt64(in)
 }
 
 // Uint convert string to uint
@@ -58,9 +58,9 @@ func Uint(in any) (uint, error) { return ToUint(in) }
 // ToUint convert string to uint
 func ToUint(in any) (uint, error) { return mathutil.ToUint(in) }
 
-// MustUint convert string to uint
+// MustUint convert string to uint, will ignore error
 func MustUint(in any) uint {
-	return mathutil.MustUint(in)
+	return mathutil.SafeUint(in)
 }
 
 // Uint64 convert string to uint64
@@ -69,9 +69,9 @@ func Uint64(in any) (uint64, error) { return ToUint64(in) }
 // ToUint64 convert string to uint64
 func ToUint64(in any) (uint64, error) { return mathutil.ToUint64(in) }
 
-// MustUint64 convert string to uint64
+// MustUint64 convert string to uint64, alias of the mathutil.SafeUint64
 func MustUint64(in any) uint64 {
-	return mathutil.MustUint64(in)
+	return mathutil.SafeUint64(in)
 }
 
 // Float convert string to float
@@ -82,7 +82,7 @@ func ToFloat(s string) (float64, error) {
 	return strconv.ParseFloat(Trim(s), 0)
 }
 
-// MustFloat convert string to float
+// MustFloat convert string to float, will ignore error
 func MustFloat(s string) float64 {
 	val, _ := strconv.ParseFloat(Trim(s), 0)
 	return val
@@ -94,7 +94,7 @@ func ToBool(s string) (bool, error) { return Bool(s) }
 // Bool parse string to bool
 func Bool(s string) (bool, error) { return strutil.ToBool(s) }
 
-// MustBool convert.
+// MustBool convert, will ignore error.
 func MustBool(s string) bool {
 	val, _ := Bool(Trim(s))
 	return val
@@ -103,10 +103,9 @@ func MustBool(s string) bool {
 // String convert val to string
 func String(val any) (string, error) { return ToString(val) }
 
-// MustString convert value to string
+// MustString convert value to string, will ignore error
 func MustString(in any) string {
-	val, _ := ToString(in)
-	return val
+	return strutil.SafeString(in)
 }
 
 // ToString convert value to string
