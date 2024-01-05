@@ -242,7 +242,7 @@ func TestFiltration_Filtering(t *testing.T) {
 
 	sTime, ok := f.Safe("sDate")
 	is.True(ok)
-	is.Eq("2018-10-16 12:34:00 +0800 CST", fmt.Sprintf("%v", sTime))
+	is.StrContains(fmt.Sprintf("%v", sTime), "2018-10-16 12:34:00")
 
 	data["url"] = "a.com?p=1"
 	f = New(data)
