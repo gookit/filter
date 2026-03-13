@@ -33,8 +33,8 @@ jobs:
           git tag -l
           env
 
-      - name: Setup Go Faster
-        uses: WillAbides/setup-go-faster@v1.14.0
+      - name: Setup Go SDK
+        uses: actions/setup-go@v6
         timeout-minutes: 3
         with:
           go-version: ${{ matrix.go_version }}
