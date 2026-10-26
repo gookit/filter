@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/gookit/filter"
-	"github.com/gookit/goutil/testutil/assert"
+	"github.com/gookit/goutil/x/assert"
 )
 
 func TestApply(t *testing.T) {
