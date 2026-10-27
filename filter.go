@@ -36,7 +36,7 @@ func Apply(name string, val any, args []string) (any, error) {
 			val = Unique(val)
 		case "trimStrings":
 			if ss, ok := val.([]string); ok {
-				val = arrutil.TrimStrings(ss)
+				val = arrutil.TrimStrings(ss, args...)
 			} else {
 				err = errInvalidParam
 			}
