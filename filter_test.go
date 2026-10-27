@@ -24,6 +24,16 @@ func TestApplyTrimStringsCutSet(t *testing.T) {
 	ret, err := filter.Apply("trimStrings", []string{"_first_", "__second__", " third "}, []string{"_"})
 	assert.NoErr(t, err)
 	assert.Equal(t, []string{"first", "second", " third "}, ret)
+
+	// no args keeps the old behavior: trim spaces only.
+	ret, err = filter.Apply("trimStrings", []string{" a ", "_b_"}, nil)
+	assert.NoErr(t, err)
+	assert.Equal(t, []string{"a", "_b_"}, ret)
+
+	// multiple cut sets are joined by arrutil.TrimStrings.
+	ret, err = filter.Apply("trimStrings", []string{" a ", "_b_"}, []string{" ", "_"})
+	assert.NoErr(t, err)
+	assert.Equal(t, []string{"a", "b"}, ret)
 }
 
 func TestFiltrationTrimStringsCutSet(t *testing.T) {
