@@ -79,12 +79,12 @@ func Float(s string) (float64, error) { return ToFloat(s) }
 
 // ToFloat convert string to float
 func ToFloat(s string) (float64, error) {
-	return strconv.ParseFloat(Trim(s), 0)
+	return strconv.ParseFloat(Trim(s), 64)
 }
 
 // MustFloat convert string to float, will ignore error
 func MustFloat(s string) float64 {
-	val, _ := strconv.ParseFloat(Trim(s), 0)
+	val, _ := strconv.ParseFloat(Trim(s), 64)
 	return val
 }
 
