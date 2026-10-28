@@ -31,8 +31,10 @@ func New(data map[string]any) *Filtration {
 	}
 }
 
-// LoadData set raw data for filtering.
+// LoadData replaces the raw data and clears previous filtered results and errors.
+// The filter rules are retained; call Filtering to process the new data.
 func (f *Filtration) LoadData(data map[string]any) {
+	f.ResetData(false)
 	f.data = data
 }
 
