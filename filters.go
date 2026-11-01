@@ -107,18 +107,26 @@ func TrimStrings(ss []string, cutSet ...string) []string {
 
 // URLEncode encode url string.
 func URLEncode(s string) string {
-	if pos := strings.IndexRune(s, '?'); pos > -1 { // escape query data
-		return s[0:pos+1] + url.QueryEscape(s[pos+1:])
+	end := len(s)
+	if fragment := strings.IndexByte(s, '#'); fragment >= 0 {
+		end = fragment
+	}
+	if pos := strings.IndexByte(s[:end], '?'); pos > -1 { // escape query data
+		return s[0:pos+1] + url.QueryEscape(s[pos+1:end]) + s[end:]
 	}
 	return s
 }
 
 // URLDecode decode url string.
 func URLDecode(s string) string {
-	if pos := strings.IndexRune(s, '?'); pos > -1 { // un-escape query data
-		qy, err := url.QueryUnescape(s[pos+1:])
+	end := len(s)
+	if fragment := strings.IndexByte(s, '#'); fragment >= 0 {
+		end = fragment
+	}
+	if pos := strings.IndexByte(s[:end], '?'); pos > -1 { // un-escape query data
+		qy, err := url.QueryUnescape(s[pos+1 : end])
 		if err == nil {
-			return s[0:pos+1] + qy
+			return s[0:pos+1] + qy + s[end:]
 		}
 	}
 	return s
